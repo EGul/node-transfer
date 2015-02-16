@@ -93,7 +93,7 @@ function handleInput(line) {
     }
 
     if (has(argv, ['listsend'])) {
-      handleListSend();
+      handleListSend(argv);
     }
 
     if (has(argv, ['rmsend'])) {
@@ -193,9 +193,13 @@ function handleSend(argv) {
 
 }
 
-function handleListSend() {
+function handleListSend(argv) {
 
-  client.listSend(function (listSend) {
+  var to = null;
+  if (typeof argv.to !== 'undefined') to = argv.to;
+
+  client.listSend(to, function (err, listSend) {
+    if (err) return console.log(err);;
     console.log(listSend);
   });
 

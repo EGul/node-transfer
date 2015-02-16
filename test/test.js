@@ -224,12 +224,30 @@ describe('client', function () {
 
     it('should list send', function (done) {
 
-      client.listSend(function (listSend) {
+      client.listSend(null, function (err, listSend) {
+
+        assert.equal(err, null);
 
         assert.equal(listSend[0].path, __dirname + '/temp.json');
         assert.equal(listSend[0].to, null);
         assert.equal(listSend[1].path, __dirname + '/fourthTemp.json');
         assert.equal(listSend[1].to, 'second');
+
+        done();
+
+      });
+
+    });
+
+    it('should list send to', function (done) {
+
+      client.listSend('second', function (err, listSend) {
+
+        assert.equal(err, null);
+
+        assert.equal(listSend.length, 1);
+        assert.equal(listSend[0].to, 'second');
+        assert.equal(listSend[0].path, __dirname + '/fourthTemp.json');
 
         done();
 
@@ -291,7 +309,7 @@ describe('client', function () {
 
         assert.equal(err, null);
 
-        client.listSend(function (listSend) {
+        client.listSend(null, function (err, listSend) {
           assert.equal(listSend.length, 1);
           did();
         });
@@ -318,7 +336,7 @@ describe('client', function () {
 
         assert.equal(err, null);
 
-        client.listSend(function (listSend) {
+        client.listSend(null, function (err, listSend) {
           assert.equal(listSend.length, 0);
           did();
         });
@@ -740,7 +758,7 @@ describe('client', function () {
         did();
       });
 
-      client.listSend(function (listSend) {
+      client.listSend(null, function (err, listSend) {
         var should = [];
         assert.deepEqual(listSend, should);
         did();
