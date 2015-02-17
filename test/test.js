@@ -8,6 +8,7 @@ var http = require('http');
 var fs = require('fs');
 var assert = require('assert');
 
+/*
 function setTempClients() {
 
   var path = __dirname.split('/');
@@ -23,6 +24,7 @@ function setTempClients() {
 
 }
 setTempClients();
+*/
 
 describe('client', function () {
 
@@ -102,7 +104,26 @@ describe('client', function () {
 
     it('should list users', function (done) {
 
+      /*
       client.users(function (users) {
+
+        if (users[0].name === 'third') {
+          var temp = users[0];
+          users[0] = users[1];
+          users[1] = temp;
+        }
+
+        assert.equal(users[0].name, 'second');
+        assert.notEqual(users[0].id, null);
+        assert.equal(users[1].name, 'third');
+        assert.notEqual(users[1].id, null);
+
+        done();
+
+      });
+      */
+
+      client.listUsers(function (users) {
 
         if (users[0].name === 'third') {
           var temp = users[0];
@@ -710,7 +731,7 @@ describe('client', function () {
 
         assert.equal(from, 'first');
 
-        secondClient.users(function (users) {
+        secondClient.listUsers(function (users) {
 
           assert.equal(users.length, 1);
           assert.equal(users[0].name, 'third');
@@ -731,7 +752,7 @@ describe('client', function () {
 
         assert.equal(from, 'first');
 
-        thirdClient.users(function (users) {
+        thirdClient.listUsers(function (users) {
 
           assert.equal(users.length, 1);
           assert.equal(users[0].name, 'second');
@@ -752,7 +773,7 @@ describe('client', function () {
       client.disconnect();
 
 
-      client.users(function (users) {
+      client.listUsers(function (users) {
         var should = [];
         assert.deepEqual(users, should);
         did();
@@ -788,7 +809,7 @@ describe('client', function () {
 
         assert.equal(json.name, 'first');
 
-        secondClient.users(function (users) {
+        secondClient.listUsers(function (users) {
 
           if (users[0].name === 'third') {
             var temp = users[0];

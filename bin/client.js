@@ -167,7 +167,13 @@ function handleOptions() {
 
 function handleUsers() {
 
+  /*
   client.users(function (users) {
+    console.log(users);
+  });
+  */
+
+  client.listUsers(function (users) {
     console.log(users);
   });
 
