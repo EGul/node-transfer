@@ -1,0 +1,76 @@
+
+#something {
+
+  position: absolute;
+
+  bottom: 10px;
+
+}
+
+#secondSomething {
+
+  height: 25px;
+  width: 550px;
+
+}
+
+#thirdSomething {
+
+}
+
+#users {
+
+  border: 1px solid black;
+
+  height: 400px;
+  width: 100px;
+
+  overflow: hidden;
+
+}
+
+#mainUser {
+
+  height: 100px;
+  width: 100px;
+
+}
+
+#users .user {
+
+  border: 1px solid black;
+
+  height: 100px;
+  width: 100px;
+
+}
+
+#messages {
+
+  border: 1px solid black;
+
+  position: absolute;
+
+  height: 400px;
+  width: 500px;
+
+  top: 8px;
+  margin-left: 110px;
+
+}
+
+#rightSomething {
+
+  position: absolute;
+
+  border: 1px solid black;
+
+  top: 8px;
+  left: 630px;
+
+  height: 400px;
+  width: 100px;
+
+  overflow: hidden;
+
+}

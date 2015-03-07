@@ -13,6 +13,8 @@
   "author": "temp-name-here",
   "license": "MIT",
   "dependencies": {
+    "angular": "^1.3.13",
+    "angular-mocks": "^1.3.14",
     "express": "^4.11.1",
     "minimist": "^1.1.0",
     "node-uuid": "^1.4.2",
@@ -20,6 +22,7 @@
     "socket.io-client": "^1.3.2"
   },
   "devDependencies": {
+    "expect.js": "^0.3.1",
     "mocha": "^2.1.0"
   }
 }
