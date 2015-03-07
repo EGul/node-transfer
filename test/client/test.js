@@ -124,7 +124,7 @@ describe('client', function () {
 
     it('should disconnect', function () {
 
-      expect($scope.message.length).to.eql(5);
+      expect($scope.messages.length).to.eql(5);
 
     });
 
