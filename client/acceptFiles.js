@@ -42,6 +42,10 @@ function acceptFilesFactory() {
 
     }
 
+    this.removeAllFiles = function () {
+      this.acceptFiles = [];
+    }
+
   }
 
 }
