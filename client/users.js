@@ -46,6 +46,10 @@ function usersFactory(userFactory) {
       fn(null);
     }
 
+    this.removeAllUsers = function () {
+      this.users = [];
+    }
+
   }
 
 }
