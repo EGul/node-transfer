@@ -243,6 +243,13 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
       messages.addMessage(null, 'did disconnect');
       $scope.messages = messages.messages;
 
+      users.removeAllUsers();
+      sendFiles.removeAllFiles();
+      acceptFiles.removeAllFiles();
+      $scope.users = users.users;
+      $scope.sendFiles = sendFiles.sendFiles;
+      $scope.acceptFiles = acceptFiles.acceptFiles;
+
       $scope.$emit('disconnect');
 
     });
@@ -378,13 +385,23 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
 
       users.getUsers('id', id, function (err, tempUsers) {
 
-        if (err) return console.log(err);
+        var name = tempUsers[0].json.name;
 
-        messages.addMessage(tempUsers[0].json.name, 'has disconnected');
-        $scope.messages = messages.messages;
+        users.removeUser('id', id, function (err) {
 
-        users.removeUser('id', id, function (err) { });
-        $scope.users = users.users;
+          acceptFiles.removeFiles('id', id, function (err) {
+
+            messages.addMessage(name, 'has disconnected');
+
+            $scope.messages = messages.messages;
+            $scope.users = users.users;
+            $scope.acceptFiles = acceptFiles.acceptFiles;
+
+            $scope.$emit('didDisconnect');
+
+          });
+
+        });
 
       });
 
