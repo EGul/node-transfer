@@ -116,7 +116,6 @@ describe('client', function () {
 
   });
 
-  /*
   describe('disconnect', function () {
 
     beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
@@ -131,7 +130,6 @@ describe('client', function () {
     });
 
   });
-  */
 
   describe('connected users', function () {
 
