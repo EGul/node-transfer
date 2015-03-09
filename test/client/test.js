@@ -222,6 +222,29 @@ describe('client', function () {
 
     });
 
+    it('should add send file connect then send request', function (done) {
+
+      $secondScope.$on('didDisconnect', function () {
+
+        $secondScope.$on('hasRequest', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
+        $scope.text = '--connect';
+        $scope.submit();
+
+      });
+
+      $scope.text = '--disconnect';
+      $scope.submit();
+
+    });
+
     it('should accept request', function (done) {
 
       $scope.tempAddFile('something.json', 'some data');

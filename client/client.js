@@ -225,6 +225,10 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
 
       socket.emit('something', tempJson);
 
+      sendFiles.sendFiles.forEach(function (e) {
+        socket.emit('hasRequest', null, e.fileId, e.filename, e.stats);
+      });
+
       messages.addMessage(null, 'did connect');
       $scope.messages = messages.messages;
 
