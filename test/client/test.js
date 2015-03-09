@@ -274,70 +274,25 @@ describe('client', function () {
 
     });
 
-  });
-
-  describe('disconnect', function () {
-
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-
-    beforeEach(function (done) {
+    it('should remove request on disconnect', function (done) {
 
       $scope.tempAddFile('something.json', 'some data');
 
       $secondScope.$on('hasRequest', function () {
 
-        $secondScope.tempAddFile('something.json', 'some data');
+        $secondScope.$on('didDisconnect', function () {
 
-        $scope.$on('hasRequest', function () {
+          expect($scope.sendFiles.length).to.eql(0);
+          expect($secondScope.acceptFiles.length).to.eql(0);
 
           done();
 
         });
 
-      });
-
-    });
-
-    afterEach(function (done) {
-
-      $secondScope.$on('disconnect', function () { done() });
-
-      $secondScope.text = '--disconnect';
-      $secondScope.submit();
-
-    });
-
-    it('should disconnect', function (done) {
-
-      var count = 0;
-      function did() {
-        count++;
-        if (count === 2) done();
-      }
-
-      $scope.$on('disconnect', function () {
-
-        expect($scope.messages.length).to.eql(7);
-        expect($scope.users.length).to.eql(0);
-        expect($scope.sendFiles.length).to.eql(0);
-
-        did();
+        $scope.text = '--disconnect';
+        $scope.submit();
 
       });
-
-      $secondScope.$on('didDisconnect', function () {
-
-        expect($secondScope.messages.length).to.eql(6);
-        expect($secondScope.users.length).to.eql(0);
-        expect($secondScope.acceptFiles.length).to.eql(0);
-
-        did();
-
-      });
-
-      $scope.text = '--disconnect';
-      $scope.submit();
 
     });
 
