@@ -340,18 +340,25 @@ function somethingConnect($scope, $secondScope, fn) {
     }
   }
 
-  $scope.$on('connect', function () {
+  $scope.$on('something', function () {
+    did();
+  });
+  $scope.$on('userjson', function () {
+    did();
+  });
 
-    $scope.$on('something', function () { did() });
-    $secondScope.$on('userjson', function () { did() });
-
-    $secondScope.text = '--connect';
-    $secondScope.submit();
-
+  $secondScope.$on('something', function () {
+    did();
+  });
+  $secondScope.$on('userjson', function () {
+    did();
   });
 
   $scope.text = '--connect';
+  $secondScope.text = '--connect';
+
   $scope.submit();
+  $secondScope.submit();
 
 }
 
