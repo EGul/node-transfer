@@ -332,33 +332,28 @@ function somethingSetTempJson($scope, $secondScope) {
 
 function somethingConnect($scope, $secondScope, fn) {
 
-  var count = 0;
-  function did() {
-    count++;
-    if (count == 2) {
-      fn();
-    }
+  if (typeof $scope.socket === 'undefined') {
+
+    $scope.$on('connect', function () {
+
+      if (typeof $secondScope.socket === 'undefined') {
+
+        $secondScope.$on('userjson', function () { fn() });
+
+        $secondScope.text = '--connect';
+        $secondScope.submit();
+
+      }
+      else {
+        fn();
+      }
+
+    });
+
+    $scope.text = '--connect';
+    $scope.submit();
+
   }
-
-  $scope.$on('something', function () {
-    did();
-  });
-  $scope.$on('userjson', function () {
-    did();
-  });
-
-  $secondScope.$on('something', function () {
-    did();
-  });
-  $secondScope.$on('userjson', function () {
-    did();
-  });
-
-  $scope.text = '--connect';
-  $secondScope.text = '--connect';
-
-  $scope.submit();
-  $secondScope.submit();
 
 }
 
