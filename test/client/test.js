@@ -131,6 +131,30 @@ describe('client', function () {
 
   });
 
+  describe('disconnect reconnect', function () {
+
+    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+
+    it('should disconnect reconnect', function (done) {
+
+      $secondScope.$on('didDisconnect', function () {
+
+        $secondScope.$on('something', function () { done() });
+
+        $scope.text = '--connect';
+        $scope.submit();
+
+      });
+
+      $scope.text = '--disconnect';
+      $scope.submit();
+
+    });
+
+  });
+
   describe('connected users', function () {
 
     beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
