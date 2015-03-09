@@ -395,9 +395,20 @@ function somethingDisconnect($scope, $secondScope, fn) {
   $scope.$on('disconnect', function () { did() });
   $secondScope.$on('disconnect', function () { did() });
 
-  $scope.text = '--disconnect';
-  $secondScope.text = '--disconnect';
-  $scope.submit();
-  $secondScope.submit();
+  if ($scope.socket.connected) {
+    $scope.text = '--disconnect';
+    $scope.submit();
+  }
+  else {
+    did();
+  }
+
+  if ($secondScope.socket.connected) {
+    $secondScope.text = '--disconnect';
+    $secondScope.submit();
+  }
+  else {
+    did();
+  }
 
 }
