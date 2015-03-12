@@ -5,7 +5,6 @@ function messagesFactory() {
 
   return function () {
 
-    this.messageObjs = [];
     this.messages = [];
 
     this.addMessage = function (from, message) {
@@ -15,13 +14,7 @@ function messagesFactory() {
         message: message
       }
 
-      this.messageObjs.push(messageObj);
-
-      var formattedMessage = '';
-      if (from !== null) formattedMessage = from + ': ';
-      formattedMessage = formattedMessage + message;
-
-      this.messages.push(formattedMessage);
+      this.messages.push(messageObj);
 
     }
 

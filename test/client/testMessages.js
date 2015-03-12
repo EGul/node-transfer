@@ -23,7 +23,6 @@ describe('messages', function () {
 
       messages.addMessage('someone', 'something');
 
-      expect(messages.messageObjs.length).to.eql(1);
       expect(messages.messages.length).to.eql(1);
 
     });

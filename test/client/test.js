@@ -69,7 +69,7 @@ describe('client', function () {
 
       expect($scope.tempJson).to.eql(null);
       expect($scope.messages.length).to.eql(2);
-      expect($scope.messages[$scope.messages.length - 1]).to.eql('json is not correct');
+      expect($scope.messages[$scope.messages.length - 1].message).to.eql('json is not correct');
 
     });
 
@@ -79,7 +79,7 @@ describe('client', function () {
 
       expect($scope.tempJson).not.to.eql(null);
       expect($scope.messages.length).to.eql(2);
-      expect($scope.messages[$scope.messages.length - 1]).to.eql('did get json');
+      expect($scope.messages[$scope.messages.length - 1].message).to.eql('did get json');
 
     });
 
@@ -208,12 +208,12 @@ describe('client', function () {
 
       $scope.tempAddFile('something.json', 'some data');
 
-      expect($scope.messages[$scope.messages.length - 1]).to.eql('did upload file');
+      expect($scope.messages[$scope.messages.length - 1].message).to.eql('did upload file');
       expect($scope.sendFiles.length).to.eql(1);
 
       $secondScope.$on('hasRequest', function () {
 
-        expect($secondScope.messages[$secondScope.messages.length - 1]).to.eql('first: request to send file: something.json');
+        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('request to send file: something.json');
         expect($secondScope.acceptFiles.length).to.eql(1);
 
         done();
@@ -258,13 +258,13 @@ describe('client', function () {
 
       $scope.$on('acceptRequest', function () {
 
-        expect($scope.messages[$scope.messages.length - 1]).to.eql('did send file');
+        expect($scope.messages[$scope.messages.length - 1].message).to.eql('did send file');
 
       });
 
       $secondScope.$on('fileData', function () {
 
-        expect($secondScope.messages[$secondScope.messages.length - 1]).to.eql('did get file: something.json');
+        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('did get file: something.json');
 
         done();
 
@@ -281,14 +281,14 @@ describe('client', function () {
         $scope.text = '--rmsend something.json';
         $scope.submit();
 
-        expect($scope.messages[$scope.messages.length - 1]).to.eql('did remove file');
+        expect($scope.messages[$scope.messages.length - 1].message).to.eql('did remove file');
         expect($scope.sendFiles.length).to.eql(0);
 
       });
 
       $secondScope.$on('rmsend', function () {
 
-        expect($secondScope.messages[$secondScope.messages.length - 1]).to.eql('first: rmsend: something.json');
+        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('rmsend: something.json');
         expect($secondScope.acceptFiles.length).to.eql(0);
 
         done();
