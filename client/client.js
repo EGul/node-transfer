@@ -3,8 +3,6 @@ var app = angular.module('app');
 
 app.controller('clientCtrl', clientCtrl);
 app.directive('usersDirective', usersDirective);
-app.directive('rightSomethingDirective', rightSomethingDirective);
-app.directive('fileUploadDirective', fileUploadDirective);
 
 function usersDirective() {
 
@@ -22,96 +20,6 @@ function usersDirective() {
     '</div>'
     ].join(''),
     link: function (scope, elem, attrs) {
-
-    }
-  }
-
-}
-
-function rightSomethingDirective() {
-
-  return {
-    restrict: 'A',
-    replace: true,
-    scope: true,
-    template: [
-      '<div class="file">',
-      '<div class="box"></div>',
-      '<div class="right">',
-      '{{ item.filename }}<br>',
-      '<span>from</span>',
-      '</div>',
-      '</div>'
-    ].join(''),
-    link: function (scope, elem, attrs) {
-
-      var item = scope.item;
-      var from = null;
-
-      if (!item.hasOwnProperty('id')) {
-        from = scope.tempJson.name;
-      }
-      else {
-
-        var id = item.id;
-
-        var tempUsers = scope.users.map(function (e) {
-          if (id === e.json.id) return e;
-        });
-
-        var user = tempUsers[0];
-
-        from = user[0].json.name;
-
-      }
-
-      var element = elem[0];
-      var tempSpan = element.getElementsByTagName('span')[0];
-      tempSpan.innerHTML = from;
-
-    }
-
-  }
-
-}
-
-function fileUploadDirective() {
-
-  return {
-    restrict: 'A',
-    link: function (scope, elem, attrs) {
-
-      var tempElem = elem[0];
-
-      tempElem.ondragover = handleDrag;
-      tempElem.ondragend = handleDragEnd;
-      tempElem.ondrop = handleDrop;
-
-      function handleDrag(e) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-
-      function handleDragEnd(e) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-
-      function handleDrop(e) {
-
-        e.stopPropagation();
-        e.preventDefault();
-
-        var file = e.dataTransfer.files[0];
-        var read = new FileReader();
-
-        read.onload = function (something) {
-          scope.tempAddFile(file.name, something.target.result);
-        }
-
-        read.readAsText(file);
-
-      }
 
     }
   }
