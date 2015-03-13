@@ -40,7 +40,7 @@ describe('rooms', function () {
 
     it('should add room', function (done) {
 
-      rooms.addRoom('1', 'something', function (err) {
+      rooms.addRoom('1', '1', 'something', function (err) {
 
         expect(err).to.eql(null);
         expect(rooms.rooms.length).to.eql(1);

@@ -11,6 +11,7 @@ function roomsFactory() {
 
       var room = {
         id: uuid.v1(),
+        fromId: null,
         name: name,
         didCreate: true
       };
@@ -20,10 +21,11 @@ function roomsFactory() {
       fn(null);
     }
 
-    this.addRoom = function (roomId, name, fn) {
+    this.addRoom = function (roomId, fromId, name, fn) {
 
       var room = {
         id: roomId,
+        fromId: fromId,
         name: name,
         didCreate: false
       };
