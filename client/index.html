@@ -13,6 +13,7 @@
     <script type='text/javascript' src='app.js'></script>
     <script type='text/javascript' src='user.js'></script>
     <script type='text/javascript' src='users.js'></script>
+    <script type='text/javascript' src='rooms.js'></script>
     <script type='text/javascript' src='messages.js'></script>
     <script type='text/javascript' src='sendFiles.js'></script>
     <script type='text/javascript' src='acceptFiles.js'></script>
@@ -53,6 +54,10 @@
           </div>
 
           <div id='something'>
+
+            <div ng-repeat='item in rooms'>
+              {{ item.name }}
+            </div>
 
           </div>
 

@@ -26,10 +26,12 @@ function usersDirective() {
 
 }
 
-function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acceptFilesFactory) {
+function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFilesFactory, acceptFilesFactory) {
 
   var socket = null;
   var tempJson = null;
+  var currentRoom = null;
+  var rooms = new roomsFactory();
   var messages = new messagesFactory();
   var users = new usersFactory();
   var sendFiles = new sendFilesFactory();
@@ -38,6 +40,8 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
   messages.addMessage(null, 'json: ');
 
   $scope.tempJson = tempJson;
+  $scope.currentRoom = currentRoom;
+  $scope.rooms = rooms.rooms;
   $scope.messages = messages.messages;
   $scope.users = users.users;
   $scope.sendFiles = sendFiles.sendFiles;
@@ -128,6 +132,17 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
       handleDisconnect(argv);
     }
 
+    if (argv.hasOwnProperty('setroom')) {
+      handleSetRoom(argv);
+    }
+
+    if (argv.hasOwnProperty('createroom')) {
+      handleCreateRoom(argv);
+    }
+    if (argv.hasOwnProperty('rmroom')) {
+      handleRemoveRoom(argv);
+    }
+
     if (argv.hasOwnProperty('listsend')) {
       handleListSend(argv);
     }
@@ -199,6 +214,70 @@ function clientCtrl($scope, messagesFactory, usersFactory, sendFilesFactory, acc
     });
 
     socket.disconnect();
+
+  }
+
+  function handleSetRoom(argv) {
+
+    var name = argv['setroom'];
+
+    rooms.getRooms('name', name, function (err, tempRooms) {
+
+      if (err) {
+        messages.addMessage(null, err);
+        $scope.messages = messages.messages
+        $scope.$emit('setroom');
+        return false;
+      }
+
+      var room = tempRooms[0];
+
+      currentRoom = room;
+      $scope.currentRoom = currentRoom;
+
+      $scope.$emit('setroom');
+
+    });
+
+  }
+
+  function handleCreateRoom(argv) {
+
+    var name = argv['createroom'];
+
+    rooms.createRoom(name, function (err) {
+
+      if (err) {
+        messages.addMessage(null, err);
+        $scope.messages = messages.messages;
+        return false;
+      }
+
+      $scope.rooms = rooms.rooms;
+
+      $scope.$emit('didcreateroom');
+
+    });
+
+  }
+
+  function handleRemoveRoom(argv) {
+
+    var name = argv['rmroom'];
+
+    rooms.removeRooms('name', name, function (err) {
+
+      if (err) {
+        messages.addMessage(null, err);
+        $scope.messages = messages.messages;
+        return false;
+      }
+
+      $scope.rooms = rooms.rooms;
+
+      $scope.$emit('didremoveroom');
+
+    });
 
   }
 

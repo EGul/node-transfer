@@ -173,6 +173,114 @@ describe('client', function () {
 
   });
 
+  describe('rooms', function () {
+
+    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+
+    describe('createRoom', function () {
+
+      it('should create room', function (done) {
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+        expect($scope.rooms.length).to.eql(1);
+        expect($scope.rooms[0].name).to.eql('something');
+
+        done();
+
+      });
+
+    });
+
+    describe('removeRoom', function () {
+
+      it('should get error room does not exist', function () {
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+        $scope.text = '--rmroom temp';
+        $scope.submit();
+
+        expect($scope.rooms.length).to.eql(1);
+        expect($scope.messages[$scope.messages.length - 1].message).to.eql('room does not exist');
+
+      });
+
+      it('should remove room', function (done) {
+
+        $scope.$on('didremoveroom', function () {
+
+          expect($scope.rooms.length).to.eql(0);
+
+          done();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+        $scope.text = '--rmroom something';
+        $scope.submit();
+
+      });
+
+    });
+
+    describe('setRoom', function () {
+
+      it('should get error room does not exist', function (done) {
+
+        $scope.$on('didcreateroom', function () {
+
+          $scope.$on('setroom', function () {
+
+            expect($scope.currentRoom).to.eql(null);
+            expect($scope.messages[$scope.messages.length - 1].message).to.eql('room does not exist');
+
+            done();
+
+          });
+
+          $scope.text = '--setroom temp';
+          $scope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
+      it('should set room', function (done) {
+
+        $scope.$on('didcreateroom', function () {
+
+          $scope.$on('setroom', function () {
+
+            expect($scope.currentRoomId).to.not.eql(null);
+
+            done();
+
+          });
+
+          $scope.text = '--setroom something';
+          $scope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
+    });
+
+  });
+
   describe('message', function () {
 
     beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
