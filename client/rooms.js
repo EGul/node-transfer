@@ -11,7 +11,8 @@ function roomsFactory() {
 
       var room = {
         id: uuid.v1(),
-        name: name
+        name: name,
+        didCreate: true
       };
 
       this.rooms.push(room);
@@ -24,6 +25,7 @@ function roomsFactory() {
       var room = {
         id: roomId,
         name: name,
+        didCreate: false
       };
 
       this.rooms.push(room);

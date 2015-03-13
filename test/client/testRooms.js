@@ -26,6 +26,7 @@ describe('rooms', function () {
         expect(err).to.eql(null);
         expect(rooms.rooms.length).to.eql(1);
         expect(rooms.rooms[0].name).to.eql('something');
+        expect(rooms.rooms[0].didCreate).to.eql(true);
 
         done();
 
@@ -44,6 +45,7 @@ describe('rooms', function () {
         expect(err).to.eql(null);
         expect(rooms.rooms.length).to.eql(1);
         expect(rooms.rooms[0].name).to.eql('something');
+        expect(rooms.rooms[0].didCreate).to.eql(false);
 
         done();
 
