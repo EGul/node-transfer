@@ -14,8 +14,11 @@ function usersDirective() {
     scope: true,
     template: [
     '<div class="user">',
-      '<div>{{ item.json.id }}</div>',
-      '<div>{{ item.json.name }}</div>',
+      '<div class="box"> </div>',
+      '<div class="right">',
+      '{{ item.json.name }}<br>',
+      '<span>something</span>',
+      '</div>',
     '</div>'
     ].join(''),
     link: function (scope, elem, attrs) {
@@ -32,13 +35,42 @@ function rightSomethingDirective() {
     replace: true,
     scope: true,
     template: [
-      '<div class="rightItem">',
-      '{{ item.filename }}',
+      '<div class="file">',
+      '<div class="box"></div>',
+      '<div class="right">',
+      '{{ item.filename }}<br>',
+      '<span>from</span>',
+      '</div>',
       '</div>'
     ].join(''),
     link: function (scope, elem, attrs) {
 
+      var item = scope.item;
+      var from = null;
+
+      if (!item.hasOwnProperty('id')) {
+        from = scope.tempJson.name;
+      }
+      else {
+
+        var id = item.id;
+
+        var tempUsers = scope.users.map(function (e) {
+          if (id === e.json.id) return e;
+        });
+
+        var user = tempUsers[0];
+
+        from = user[0].json.name;
+
+      }
+
+      var element = elem[0];
+      var tempSpan = element.getElementsByTagName('span')[0];
+      tempSpan.innerHTML = from;
+
     }
+
   }
 
 }

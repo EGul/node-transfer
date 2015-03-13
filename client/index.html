@@ -28,39 +28,67 @@
 
       <div ng-controller='clientCtrl'>
 
-        <div id='something'>
+        <div id='bottom'>
+
           <form ng-submit='submit()'>
-            <input id='secondSomething' type='text' ng-model='text' name='text'/>
-            <input id='thirdSomething' type='submit' value='submit' />
+            <div><input type='text' ng-model='text' name='text'/ autocomplete='off'></div>
+            <input id='thirdSomething' type='submit' value='+' />
           </form>
+          
         </div>
 
-        <div id='users'>
+        <div id='leftSomething'>
 
           <div id='mainUser'>
-            <div>{{ tempJson.id }}</div>
-            <div>{{ tempJson.name }}</div>
+
+            <div id='box'> </div>
+
+            <div id='right'>
+              <div id='username'>{{ tempJson.name }}</div>
+              <div id='secondBox'></div>
+            </div>
+
           </div>
 
-          <div ng-repeat='item in users'>
-            <div users-directive> </div>
+          <div id='something'>
+
           </div>
 
         </div>
 
         <div id='messages' file-upload-directive>
           <div ng-repeat='item in messages track by $index'>
-            {{ item }}
+            <span ng-if='!item.from'> {{ item.message }} </span>
+            <span ng-if='item.from'> {{ item.from }}: <span> {{ item.message}} </span> </span>
           </div>
         </div>
 
         <div id='rightSomething'>
-          <div ng-repeat='item in sendFiles'>
-            <div right-something-directive > </div>
+
+          <div id='users'>
+
+            <div id='usersBox'>users</div>
+
+            <div ng-repeat='item in users'>
+              <div users-directive> </div>
+            </div>
+
           </div>
-          <div ng-repeat='item in acceptFiles'>
-            <div right-something-directive > </div>
+
+          <div id='files'>
+
+            <div id='filesBox'>files</div>
+
+            <div ng-repeat='item in sendFiles'>
+              <div right-something-directive> </div>
+            </div>
+
+            <div ng-repeat='item in acceptFiles'>
+              <div right-something-directive> </div>
+            </div>
+
           </div>
+
         </div>
 
       </div>

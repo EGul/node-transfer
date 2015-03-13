@@ -1,61 +1,172 @@
 
-#something {
+#bottom {
+
+  border: 3px solid rgb(225, 225, 225);
 
   position: absolute;
 
-  bottom: 10px;
+  left: 150px;
+  right: 150px;
+  bottom: 0px;
+
+  height: 30px;
 
 }
 
-#secondSomething {
+#bottom div {
 
-  height: 25px;
-  width: 550px;
+  border: 0px solid black;
+
+  position: absolute;
+
+  left: 0px;
+  right: 30px;
+
+  height: 100%;
 
 }
 
-#thirdSomething {
+#bottom input[type = text] {
+
+  outline-width: 0px;
+
+  border: 0px;
+
+  position: absolute;
+
+  height: 28px;
+  width: 100%;
 
 }
 
-#users {
+#bottom input[type = 'submit'] {
 
-  border: 1px solid black;
+  outline-width: 0px;
 
-  height: 400px;
-  width: 100px;
+  border: 0px;
+  border-left: 3px solid rgb(225, 225, 225);
+
+  position: absolute;
+
+  right: 0px;
+
+  height: 30px;
+  width: 33px;
+
+  background-color: white;
+
+  font-size: 17px;
+
+}
+
+
+#leftSomething {
+
+  position: absolute;
+
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 150px;
 
   overflow: hidden;
 
-}
-
-#mainUser {
-
-  height: 100px;
-  width: 100px;
+  background-color: rgb(50, 50, 50);
 
 }
 
-#users .user {
-
-  border: 1px solid black;
+#leftSomething #mainUser {
 
   height: 100px;
-  width: 100px;
+  width: 100%;
+
+}
+
+#leftSomething #mainUser #box {
+
+  margin-top: 5px;
+  margin-left: 5px;
+
+  height: 50px;
+  width: 50px;
+
+}
+
+#leftSomething #mainUser #username {
+
+  position: absolute;
+
+  top: 5px;
+  left: 56px;
+  right: 0px;
+
+  height: 25px;
+
+  text-align: center;
+
+  line-height: 25px;
+
+  color: white;
+
+}
+
+#leftSomething #mainUser #secondBox {
+
+  position: absolute;
+
+  top: 30px;
+  left: 56px;
+  right: 0px;
+
+  height: 25px;
+
+}
+
+#leftSomething #something {
+
+  position: absolute;
+
+  top: 100px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+}
+
+#leftSomething #something div {
+
+  margin-top: 10px;
+  margin-left: 5px;
+
+  color: white;
 
 }
 
 #messages {
 
-  border: 1px solid black;
-
   position: absolute;
 
-  height: 400px;
-  width: 500px;
+  top: 0px;
+  bottom: 36px;
+  left: 153px;
+  right: 153px;
 
-  top: 8px;
-  margin-left: 110px;
+  padding-top: 10px;
+  padding-left: 10px;
+
+  min-width: 500px;
+
+}
+
+#messages span  {
+
+  color: rgb(200, 200, 200);
+
+}
+
+#messages span span {
+
+  color: black;
 
 }
 
@@ -63,14 +174,117 @@
 
   position: absolute;
 
-  border: 1px solid black;
+  border-left: 3px solid rgb(225, 225, 225);
 
-  top: 8px;
-  left: 630px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
 
-  height: 400px;
-  width: 100px;
+  width: 150px;
 
   overflow: hidden;
+
+}
+
+#rightSomething #users {
+
+  height: 50%;
+
+}
+
+#rightSomething #users #usersBox {
+
+  border-bottom: 3px solid rgb(225, 225, 225);
+
+  height: 30px;
+
+  text-align: center;
+
+}
+
+#rightSomething #users .user {
+
+  border: 1px solid rgb(225, 225, 225);
+
+  position: relative;
+
+  height: 30px;
+
+}
+
+#rightSomething #users .user .box {
+
+  border: 1px solid black;
+
+  height: 30px;
+  width: 30px;
+
+}
+
+#rightSomething #users .user .right {
+
+  position: absolute;
+
+  top: 0px;
+  left: 33px;
+
+}
+
+#rightSomething #users .user span {
+
+  color: rgb(225, 225, 225);
+
+}
+
+
+#rightSomething #files {
+
+  height: 50%;
+
+}
+
+#rightSomething #files #filesBox {
+
+  border-bottom: 3px solid rgb(225, 225, 225);
+
+  height: 30px;
+
+  text-align: center;
+
+}
+
+#rightSomething #files .file {
+
+  border-bottom: 1px solid rgb(225, 225, 225);
+
+  position: relative;
+
+  height: 30px;
+
+}
+
+#rightSomething #files .file .box {
+
+  border: 1px solid black;
+
+  top: 0px;
+
+  height: 30px;
+  width: 30px;
+
+}
+
+#rightSomething #files .file .right {
+
+  position: absolute;
+
+  top: 0px;
+  left: 33px;
+
+}
+
+#rightSomething #files .file .right span {
+
+  color: rgb(225, 225, 225);
 
 }
