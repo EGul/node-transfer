@@ -279,6 +279,40 @@ describe('client', function () {
 
     });
 
+    describe('disconnect', function () {
+
+      it('should remove all rooms and set currentroom to null', function (done) {
+
+        $scope.$on('didcreateroom', function () {
+
+          $scope.$on('setroom', function () {
+
+            $scope.$on('disconnect', function () {
+
+              expect($scope.currentRoom).to.eql(null);
+              expect($scope.rooms.length).to.eql(0);
+
+              done();
+
+            });
+
+            $scope.text = '--disconnect';
+            $scope.submit();
+
+          });
+
+          $scope.text = '--setroom something';
+          $scope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
+    });
+
   });
 
   describe('message', function () {

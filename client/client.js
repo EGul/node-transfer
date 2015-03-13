@@ -202,9 +202,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       messages.addMessage(null, 'did disconnect');
       $scope.messages = messages.messages;
 
+      rooms.removeAllRooms();
       users.removeAllUsers();
       sendFiles.removeAllFiles();
       acceptFiles.removeAllFiles();
+      $scope.currentRoom = null;
+      $scope.rooms = rooms.rooms;
       $scope.users = users.users;
       $scope.sendFiles = sendFiles.sendFiles;
       $scope.acceptFiles = acceptFiles.acceptFiles;
