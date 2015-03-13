@@ -35,6 +35,24 @@ describe('rooms', function () {
 
   });
 
+  describe('addRoom', function () {
+
+    it('should add room', function (done) {
+
+      rooms.addRoom('1', 'something', function (err) {
+
+        expect(err).to.eql(null);
+        expect(rooms.rooms.length).to.eql(1);
+        expect(rooms.rooms[0].name).to.eql('something');
+
+        done();
+
+      });
+
+    });
+
+  });
+
   describe('removeRoom', function () {
 
     it('should get error room does not exist', function (done) {

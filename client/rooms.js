@@ -19,6 +19,19 @@ function roomsFactory() {
       fn(null);
     }
 
+    this.addRoom = function (roomId, name, fn) {
+
+      var room = {
+        id: roomId,
+        name: name,
+      };
+
+      this.rooms.push(room);
+
+      fn(null);
+
+    }
+
     this.removeRooms = function (property, value, fn) {
 
       var numRooms = this.rooms.length;
