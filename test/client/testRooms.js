@@ -73,6 +73,24 @@ describe('rooms', function () {
 
   });
 
+  describe('removeAllRooms', function () {
+
+    it('should remove all rooms', function (done) {
+
+      rooms.createRoom('something', function (err) {
+
+        rooms.removeAllRooms();
+
+        expect(rooms.rooms.length).to.eql(0);
+
+        done();
+
+      });
+
+    });
+
+  });
+
   describe('getRooms', function () {
 
     it('should get error room does not exist', function (done) {

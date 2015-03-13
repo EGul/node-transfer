@@ -31,6 +31,10 @@ function roomsFactory() {
       fn(null);
     }
 
+    this.removeAllRooms = function () {
+      this.rooms = [];
+    }
+
     this.getRooms = function (property, value, fn) {
 
       var tempRooms = this.rooms.filter(function (e) {
