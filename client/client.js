@@ -258,6 +258,11 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       $scope.rooms = rooms.rooms;
 
+      var room = rooms.rooms[rooms.rooms.length - 1];
+      var roomId = room.id;
+
+      socket.emit('createRoom', roomId, name);
+
       $scope.$emit('didcreateroom');
 
     });
@@ -268,7 +273,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     var name = argv['rmroom'];
 
-    rooms.removeRooms('name', name, function (err) {
+    rooms.getRooms('name', name, function (err, tempRooms) {
 
       if (err) {
         messages.addMessage(null, err);
@@ -276,9 +281,24 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         return false;
       }
 
-      $scope.rooms = rooms.rooms;
+      var room = tempRooms[0];
+      var roomId = room.id;
 
-      $scope.$emit('didremoveroom');
+      rooms.removeRooms('name', name, function (err) {
+
+        if (err) {
+          messages.addMessage(null, err);
+          $scope.messages = messages.messages;
+          return false;
+        }
+
+        $scope.rooms = rooms.rooms;
+
+        socket.emit('removeRoom', roomId);
+
+        $scope.$emit('didremoveroom');
+
+      });
 
     });
 
@@ -417,17 +437,46 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
           acceptFiles.removeFiles('id', id, function (err) {
 
-            messages.addMessage(name, 'has disconnected');
+            rooms.removeRooms('fromId', id, function (err) {
 
-            $scope.messages = messages.messages;
-            $scope.users = users.users;
-            $scope.acceptFiles = acceptFiles.acceptFiles;
+              messages.addMessage(name, 'has disconnected');
 
-            $scope.$emit('didDisconnect');
+              $scope.rooms = rooms.rooms;
+              $scope.messages = messages.messages;
+              $scope.users = users.users;
+              $scope.acceptFiles = acceptFiles.acceptFiles;
+
+              $scope.$emit('didDisconnect');
+
+            });
 
           });
 
         });
+
+      });
+
+    });
+
+    socket.on('createRoom', function (roomId, fromId, roomName) {
+
+      rooms.addRoom(roomId, fromId, roomName, function (err) {
+
+        $scope.rooms = rooms.rooms;
+
+        $scope.$emit('createroom');
+
+      });
+
+    });
+
+    socket.on('removeRoom', function (roomId) {
+
+      rooms.removeRooms('id', roomId, function (err) {
+
+        $scope.rooms = rooms.rooms;
+
+        $scope.$emit('removeroom');
 
       });
 

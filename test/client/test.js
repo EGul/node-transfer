@@ -183,13 +183,19 @@ describe('client', function () {
 
       it('should create room', function (done) {
 
+        $secondScope.$on('createroom', function () {
+
+          expect($secondScope.rooms.length).to.eql(1);
+
+          done();
+
+        });
+
         $scope.text = '--createroom something';
         $scope.submit();
 
         expect($scope.rooms.length).to.eql(1);
         expect($scope.rooms[0].name).to.eql('something');
-
-        done();
 
       });
 
@@ -212,18 +218,22 @@ describe('client', function () {
 
       it('should remove room', function (done) {
 
-        $scope.$on('didremoveroom', function () {
+        $secondScope.$on('createroom', function () {
 
-          expect($scope.rooms.length).to.eql(0);
+          $secondScope.$on('removeroom', function () {
 
-          done();
+            expect($secondScope.rooms.length).to.eql(0);
+
+            done();
+
+          });
+
+          $scope.text = '--rmroom something';
+          $scope.submit();
 
         });
 
         $scope.text = '--createroom something';
-        $scope.submit();
-
-        $scope.text = '--rmroom something';
         $scope.submit();
 
       });
@@ -281,15 +291,15 @@ describe('client', function () {
 
     describe('disconnect', function () {
 
-      it('should remove all rooms and set currentroom to null', function (done) {
+      it('should remove all rooms', function (done) {
 
         $scope.$on('didcreateroom', function () {
 
           $scope.$on('setroom', function () {
 
-            $scope.$on('disconnect', function () {
+            $secondScope.$on('didDisconnect', function () {
 
-              expect($scope.currentRoom).to.eql(null);
+              expect($secondScope.rooms.length).to.eql(0);
               expect($scope.rooms.length).to.eql(0);
 
               done();
