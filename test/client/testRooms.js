@@ -1,4 +1,64 @@
 
+describe('room', function () {
+
+  var $scope = null;
+  var room = null
+
+  beforeEach(function () {
+
+    module('app');
+
+    inject(function ($rootScope, roomFactory) {
+
+      $scope = $rootScope.$new();
+      room = new roomFactory();
+
+    });
+
+  });
+
+  describe('createRoom', function () {
+
+    it('should create room', function (done) {
+
+      room.createRoom('something', function (err) {
+
+        expect(err).to.eql(null);
+        expect(room.id).to.not.eql(null);
+        expect(room.fromId).to.eql(null);
+        expect(room.name).to.eql('something');
+        expect(room.didCreate).to.eql(true);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+  describe('addRoom', function () {
+
+    it('should add room', function (done) {
+
+      room.addRoom('1', '1', 'something', function (err) {
+
+        expect(err).to.eql(null);
+        expect(room.id).not.to.eql(null);
+        expect(room.fromId).not.to.eql(null);
+        expect(room.name).to.eql('something');
+        expect(room.didCreate).to.eql(false);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+});
+
 describe('rooms', function () {
 
   var $scope = null;

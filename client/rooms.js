@@ -1,7 +1,42 @@
 
-angular.module('app').factory('roomsFactory', roomsFactory);
+var app = angular.module('app');
+app.factory('roomsFactory', roomsFactory);
+app.factory('roomFactory', roomFactory);
 
-function roomsFactory() {
+function roomFactory() {
+
+  return function () {
+
+    this.id = null;
+    this.fromId = null;
+    this.name = null;
+    this.didCreate = null;
+
+    this.createRoom = function (name, fn) {
+
+      this.id = uuid.v1();
+      this.name = name;
+      this.didCreate = true;
+
+      fn(null);
+    }
+
+    this.addRoom = function (roomId, fromId, name, fn) {
+
+      this.id = roomId;
+      this.fromId = fromId;
+      this.name = name;
+      this.didCreate = false;
+
+      fn(null);
+    }
+
+  }
+
+}
+
+
+function roomsFactory(roomFactory) {
 
   return function () {
 
@@ -9,29 +44,26 @@ function roomsFactory() {
 
     this.createRoom = function (name, fn) {
 
-      var room = {
-        id: uuid.v1(),
-        fromId: null,
-        name: name,
-        didCreate: true
-      };
+      var room = new roomFactory();
+
+      room.createRoom(name, function (err) {
+
+      });
 
       this.rooms.push(room);
-
       fn(null);
+
     }
 
     this.addRoom = function (roomId, fromId, name, fn) {
 
-      var room = {
-        id: roomId,
-        fromId: fromId,
-        name: name,
-        didCreate: false
-      };
+      var room = new roomFactory();
+
+      room.addRoom(roomId, fromId, name, function (err) {
+
+      });
 
       this.rooms.push(room);
-
       fn(null);
 
     }
