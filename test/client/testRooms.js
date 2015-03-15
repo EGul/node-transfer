@@ -210,4 +210,42 @@ describe('rooms', function () {
 
   });
 
+  describe('joinRoom', function () {
+
+    it('should join room', function (done) {
+
+      rooms.joinRoom('1', '1', function (err) {
+
+        expect(err).to.eql(null);
+        expect(rooms.users.length).to.eql(1);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+  describe('leaveRoom', function () {
+
+    it('should leave room', function (done) {
+
+      rooms.joinRoom('1', '1', function (err) {
+
+        rooms.leaveRoom('1', '1', function (err) {
+
+          expect(err).to.eql(null);
+          expect(rooms.users.length).to.eql(0);
+
+          done();
+
+        });
+
+      });
+
+    });
+
+  });
+
 });

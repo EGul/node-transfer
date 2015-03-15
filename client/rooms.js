@@ -41,6 +41,7 @@ function roomsFactory(roomFactory) {
   return function () {
 
     this.rooms = [];
+    this.users = [];
 
     this.createRoom = function (name, fn) {
 
@@ -72,8 +73,19 @@ function roomsFactory(roomFactory) {
 
       var numRooms = this.rooms.length;
 
+      var tempRoomId = null;
+
       this.rooms = this.rooms.filter(function (e) {
-        if (e[property] !== value) return e;
+        if (e[property] !== value) {
+          return e;
+        }
+        else {
+          tempRoomId = e.id;
+        }
+      });
+
+      this.users = this.users.filter(function (e) {
+        if (e.roomId !== tempRoomId) return e;
       });
 
       if (this.rooms.length === numRooms) return fn('room does not exist');
@@ -82,6 +94,7 @@ function roomsFactory(roomFactory) {
 
     this.removeAllRooms = function () {
       this.rooms = [];
+      this.users = [];
     }
 
     this.getRooms = function (property, value, fn) {
@@ -92,6 +105,27 @@ function roomsFactory(roomFactory) {
 
       if (!tempRooms.length) return fn('room does not exist', null);
       fn(null, tempRooms);
+    }
+
+    this.joinRoom = function (roomId, userId, fn) {
+
+      var temp = {
+        roomId: roomId,
+        userId: userId
+      };
+
+      this.users.push(temp);
+
+      fn(null);
+    }
+
+    this.leaveRoom = function (roomId, userId, fn) {
+
+      this.users = this.users.filter(function (e) {
+        if (e.userId === userId && e.roomId !== roomId) return e;
+      });
+
+      fn(null);
     }
 
   }

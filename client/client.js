@@ -42,6 +42,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   $scope.tempJson = tempJson;
   $scope.currentRoom = currentRoom;
   $scope.rooms = rooms.rooms;
+  $scope.roomsUsers = rooms.users;
   $scope.messages = messages.messages;
   $scope.users = users.users;
   $scope.sendFiles = sendFiles.sendFiles;
@@ -139,6 +140,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     if (argv.hasOwnProperty('createroom')) {
       handleCreateRoom(argv);
     }
+
     if (argv.hasOwnProperty('rmroom')) {
       handleRemoveRoom(argv);
     }
@@ -208,6 +210,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       acceptFiles.removeAllFiles();
       $scope.currentRoom = null;
       $scope.rooms = rooms.rooms;
+      $scope.roomsUsers = rooms.users;
       $scope.users = users.users;
       $scope.sendFiles = sendFiles.sendFiles;
       $scope.acceptFiles = acceptFiles.acceptFiles;
@@ -235,8 +238,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       var room = tempRooms[0];
 
+      var previousRoom = currentRoom;
       currentRoom = room;
       $scope.currentRoom = currentRoom;
+
+      socket.emit('joinRoom', currentRoom.id);
+      if (previousRoom !== null) socket.emit('leaveRoom', previousRoom.id);
 
       $scope.$emit('setroom');
 
@@ -257,6 +264,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       }
 
       $scope.rooms = rooms.rooms;
+      $scope.roomsUsers = rooms.users;
 
       var room = rooms.rooms[rooms.rooms.length - 1];
       var roomId = room.id;
@@ -293,6 +301,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         }
 
         $scope.rooms = rooms.rooms;
+        $scope.roomsUsers = rooms.users;
 
         socket.emit('removeRoom', roomId);
 
@@ -407,6 +416,18 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       $scope.messages = messages.messages;
 
       socket.emit('userJson', json.id, tempJson);
+
+      rooms.getRooms('didCreate', true, function (err, tempRooms) {
+        if (err) return false;
+        tempRooms.forEach(function (e) {
+          socket.emit('createRoom', e.id, e.name);
+        });
+      });
+
+      if (currentRoom !== null) {
+        socket.emit('joinRoom', currentRoom.id);
+      }
+
       sendFiles.sendFiles.forEach(function (e) {
         socket.emit('hasRequest', e.toId, e.fileId, e.filename, e.stats);
       });
@@ -441,6 +462,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
               messages.addMessage(name, 'has disconnected');
 
+              $scope.roomsUsers = rooms.users;
               $scope.rooms = rooms.rooms;
               $scope.messages = messages.messages;
               $scope.users = users.users;
@@ -463,6 +485,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       rooms.addRoom(roomId, fromId, roomName, function (err) {
 
         $scope.rooms = rooms.rooms;
+        $scope.roomsUsers = rooms.users;
 
         $scope.$emit('createroom');
 
@@ -475,8 +498,33 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       rooms.removeRooms('id', roomId, function (err) {
 
         $scope.rooms = rooms.rooms;
+        $scope.roomsUsers = rooms.users;
 
-        $scope.$emit('removeroom');
+        $scope.$emit('removeroom', rooms);
+
+      });
+
+    });
+
+    socket.on('joinRoom', function (roomId, fromId) {
+
+      rooms.joinRoom(roomId, fromId, function (err) {
+
+        $scope.roomsUsers = rooms.users;
+
+        $scope.$emit('joinroom', rooms);
+
+      });
+
+    });
+
+    socket.on('leaveRoom', function (roomId, fromId) {
+
+      rooms.leaveRoom(roomId, fromId, function (err) {
+
+        $scope.roomsUsers = rooms.users;
+
+        $scope.$emit('leaveroom', rooms);
 
       });
 
