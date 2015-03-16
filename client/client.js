@@ -222,11 +222,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       messages.addMessage(null, null, 'did disconnect');
       $scope.messages = messages.messages;
 
+      currentRoom = null;
       rooms.removeAllRooms();
       users.removeAllUsers();
       sendFiles.removeAllFiles();
       acceptFiles.removeAllFiles();
-      $scope.currentRoom = null;
+      $scope.currentRoom = currentRoom;
       $scope.rooms = rooms.rooms;
       $scope.roomsUsers = rooms.users;
       $scope.users = users.users;
@@ -309,6 +310,13 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       var room = tempRooms[0];
       var roomId = room.id;
+
+      if (currentRoom !== null) {
+        if (currentRoom.id === roomId) {
+          currentRoom = null;
+          $scope.currentRoom = currentRoom;
+        }
+      }
 
       rooms.removeRooms('name', name, function (err) {
 
@@ -476,6 +484,21 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
           acceptFiles.removeFiles('id', id, function (err) {
 
+            rooms.getRooms('fromId', id, function (err, tempRooms) {
+
+              if (err) return null;
+
+              tempRooms.forEach(function (e) {
+                if (currentRoom !== null) {
+                  if (currentRoom.id === e.id) {
+                    currentRoom = null;
+                    $scope.currentRoom = currentRoom;
+                  }
+                }
+              });
+
+            });
+
             rooms.removeRooms('fromId', id, function (err) {
 
               messages.addMessage(null, name, 'has disconnected');
@@ -512,6 +535,13 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     });
 
     socket.on('removeRoom', function (roomId) {
+
+      if (currentRoom !== null) {
+        if (currentRoom.id === roomId) {
+          currentRoom = null;
+          $scope.currentRoom = currentRoom;
+        }
+      }
 
       rooms.removeRooms('id', roomId, function (err) {
 

@@ -210,6 +210,7 @@ describe('client', function () {
 
         $secondScope.$on('createroom', function () {
 
+          expect($secondScope.currentRoom).to.eql(null);
           expect($secondScope.rooms.length).to.eql(1);
 
           done();
@@ -219,6 +220,7 @@ describe('client', function () {
         $scope.text = '--createroom something';
         $scope.submit();
 
+        expect($scope.currentRoom).to.eql(null);
         expect($scope.rooms.length).to.eql(1);
         expect($scope.rooms[0].name).to.eql('something');
 
@@ -264,6 +266,105 @@ describe('client', function () {
 
         $scope.text = '--createroom something';
         $scope.submit();
+
+      });
+
+      it('should set current room to null', function (done) {
+
+        var count = 0;
+        function joinRoom() {
+          count++;
+          if (count === 2) usersDidJoinRoom();
+        }
+
+        function usersDidJoinRoom() {
+
+          $secondScope.$on('removeroom', function () {
+
+            expect($scope.currentRoom).to.eql(null);
+            expect($secondScope.currentRoom).to.eql(null);
+
+            done();
+
+          });
+
+          $scope.text = '--rmroom something';
+          $scope.submit();
+
+        }
+
+        $secondScope.$on('createroom', function () {
+
+          $scope.$on('joinroom', function () {
+            joinRoom();
+          });
+
+          $secondScope.$on('joinroom', function () {
+            joinRoom();
+          });
+
+          $scope.text = '--setroom something';
+          $secondScope.text = '--setroom something';
+          $scope.submit();
+          $secondScope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
+      it('should not set current room to null', function (done) {
+
+        var createRoomCount = 0;
+        function createRoom() {
+          createRoomCount++;
+          if (createRoomCount === 2) didCreateRooms();
+        }
+
+        var joinRoomCount = 0;
+        function joinRoom() {
+          joinRoomCount++;
+          if (joinRoomCount === 2) didJoinRooms();
+        }
+
+        function didCreateRooms() {
+
+          $scope.$on('joinroom', function () { joinRoom() });
+          $secondScope.$on('joinroom', function () { joinRoom() });
+
+          $scope.text = '--setroom something';
+          $secondScope.text = '--setroom something';
+          $scope.submit();
+          $secondScope.submit();
+
+        }
+
+        function didJoinRooms() {
+
+          $secondScope.$on('removeroom', function () {
+
+            expect($scope.currentRoom).to.not.eql(null);
+            expect($secondScope.currentRoom).to.not.eql(null);
+
+            done();
+
+          });
+
+          $scope.text = '--rmroom temp';
+          $scope.submit();
+
+        }
+
+        $secondScope.$on('createroom', function () {
+          createRoom();
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit()
+        $scope.text = '--createroom temp';
+        $scope.submit()
 
       });
 
@@ -550,6 +651,68 @@ describe('client', function () {
 
       });
 
+      it('should set current room to null', function (done) {
+
+        var count = 0;
+        function joinRoom() {
+          count++;
+          if (count === 2) usersDidJoinRoom();
+        }
+
+        function usersDidJoinRoom() {
+
+          $secondScope.$on('didDisconnect', function () {
+
+            expect($scope.currentRoom).to.eql(null);
+            expect($secondScope.currentRoom).to.eql(null);
+
+            done();
+
+          });
+
+          $scope.text = '--disconnect';
+          $scope.submit();
+
+        }
+
+        $secondScope.$on('createroom', function () {
+
+          $scope.$on('joinroom', function () {
+            joinRoom();
+          });
+
+          $secondScope.$on('joinroom', function () {
+            joinRoom();
+          });
+
+          $scope.text = '--setroom something';
+          $secondScope.text = '--setroom something';
+          $scope.submit();
+          $secondScope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
+      it('should not set current room to null', function () {
+
+        $secondScope.$on('createroom', function () {
+
+          $scope.text = '--setroom something';
+          $scope.submit();
+          $secondScope.text = '--setroom something';
+          $secondScope.submit();
+
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
     });
 
   });
@@ -609,16 +772,30 @@ describe('client', function () {
 
       $secondScope.$on('didDisconnect', function () {
 
-        $secondScope.$on('hasRequest', function () {
+        $scope.$on('didcreateroom', function () {
 
-          expect($secondScope.acceptFiles.length).to.eql(1);
+          $scope.$on('setroom', function () {
 
-          done();
+            $secondScope.$on('hasRequest', function () {
+
+              expect($secondScope.acceptFiles.length).to.eql(1);
+
+              done();
+
+            });
+
+            $scope.tempAddFile('something.json', 'some data');
+            $scope.text = '--connect';
+            $scope.submit();
+
+          });
+
+          $scope.text = '--setroom something';
+          $scope.submit();
 
         });
 
-        $scope.tempAddFile('something.json', 'some data');
-        $scope.text = '--connect';
+        $scope.text = '--createroom something';
         $scope.submit();
 
       });
