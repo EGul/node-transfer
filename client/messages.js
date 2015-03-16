@@ -7,9 +7,10 @@ function messagesFactory() {
 
     this.messages = [];
 
-    this.addMessage = function (from, message) {
+    this.addMessage = function (roomId, from, message) {
 
       var messageObj = {
+        roomId: roomId,
         from: from,
         message: message
       }

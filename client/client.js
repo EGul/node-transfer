@@ -37,7 +37,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   var sendFiles = new sendFilesFactory();
   var acceptFiles = new acceptFilesFactory();
 
-  messages.addMessage(null, 'json: ');
+  messages.addMessage(null, null, 'json: ');
 
   $scope.tempJson = tempJson;
   $scope.currentRoom = currentRoom;
@@ -64,13 +64,13 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         tempJson = json;
         $scope.tempJson = tempJson;
 
-        messages.addMessage(null, 'did get json');
+        messages.addMessage(null, null, 'did get json');
         $scope.messages = messages.messages;
 
       }
       else {
 
-        messages.addMessage(null, 'json is not correct');
+        messages.addMessage(null, null, 'json is not correct');
         $scope.messages = messages.messages;
 
       }
@@ -82,12 +82,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       sendFiles.addFile(filename, data, function (err, json) {
 
         if (err) {
-          messages.addMessage(null, err);
+          messages.addMessage(null, null, err);
           $scope.messages = messages.messages;
           return null;
         }
 
-        messages.addMessage(null, 'did upload file');
+        messages.addMessage(null, null, 'did upload file');
         $scope.messages = messages.messages;
 
         $scope.sendFiles = sendFiles.sendFiles;
@@ -186,7 +186,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         socket.emit('hasRequest', null, e.fileId, e.filename, e.stats);
       });
 
-      messages.addMessage(null, 'did connect');
+      messages.addMessage(null, null, 'did connect');
       $scope.messages = messages.messages;
 
       didConnect();
@@ -201,7 +201,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     socket.on('disconnect', function () {
 
-      messages.addMessage(null, 'did disconnect');
+      messages.addMessage(null, null, 'did disconnect');
       $scope.messages = messages.messages;
 
       rooms.removeAllRooms();
@@ -230,7 +230,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     rooms.getRooms('name', name, function (err, tempRooms) {
 
       if (err) {
-        messages.addMessage(null, err);
+        messages.addMessage(null, null, err);
         $scope.messages = messages.messages
         $scope.$emit('setroom');
         return false;
@@ -258,7 +258,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     rooms.createRoom(name, function (err) {
 
       if (err) {
-        messages.addMessage(null, err);
+        messages.addMessage(null, null, err);
         $scope.messages = messages.messages;
         return false;
       }
@@ -284,7 +284,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     rooms.getRooms('name', name, function (err, tempRooms) {
 
       if (err) {
-        messages.addMessage(null, err);
+        messages.addMessage(null, null, err);
         $scope.messages = messages.messages;
         return false;
       }
@@ -295,7 +295,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       rooms.removeRooms('name', name, function (err) {
 
         if (err) {
-          messages.addMessage(null, err);
+          messages.addMessage(null, null, err);
           $scope.messages = messages.messages;
           return false;
         }
@@ -316,7 +316,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   function handleMessage(line) {
 
     if (socket === null || (socket !== null && !socket.connected)) {
-      messages.addMessage(null, 'not connected');
+      messages.addMessage(null, null, 'not connected');
       $scope.messages = messages.messages;
       return false;
     }
@@ -328,10 +328,10 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     }
 
-    messages.addMessage(tempJson.name, line);
+    messages.addMessage(currentRoom.id, tempJson.name, line);
     $scope.messages = messages.messages;
 
-    socket.emit('message', id, message);
+    socket.emit('message', currentRoom.id, id, message);
 
   }
 
@@ -339,7 +339,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     sendFiles.sendFiles.forEach(function (e) {
 
-      messages.addMessage(null, e.filename + ' ' + e.fileId);
+      messages.addMessage(null, null, e.filename + ' ' + e.fileId);
       $scope.messages = messages.messages;
 
     });
@@ -353,7 +353,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     sendFiles.getFiles('filename', filename, function (err, files) {
 
       if (err) {
-        messages.addMessage(null, err);
+        messages.addMessage(null, null, err);
         $scope.messages = messages.messages;
         return null;
       }
@@ -365,12 +365,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       sendFiles.removeFiles('fileId', fileId, function (err) {
 
         if (err) {
-          messages.addMessage(null, err);
+          messages.addMessage(null, null, err);
           $scope.messages = messages.messages;
           return null;
         }
 
-        messages.addMessage(null, 'did remove file');
+        messages.addMessage(null, null, 'did remove file');
         $scope.messages = messages.messages;
 
         $scope.sendFiles = sendFiles.sendFiles;
@@ -390,7 +390,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     acceptFiles.getFiles('filename', filename, function (err, files) {
 
       if (err) {
-        messages.addMessage(null, err);
+        messages.addMessage(null, null, err);
         $scope.messages = messages.messages;
         return null;
       }
@@ -412,7 +412,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       users.addUser(json);
       $scope.users = users.users;
 
-      messages.addMessage(json.name, 'has connected');
+      messages.addMessage(null, json.name, 'has connected');
       $scope.messages = messages.messages;
 
       socket.emit('userJson', json.id, tempJson);
@@ -460,7 +460,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
             rooms.removeRooms('fromId', id, function (err) {
 
-              messages.addMessage(name, 'has disconnected');
+              messages.addMessage(null, name, 'has disconnected');
 
               $scope.roomsUsers = rooms.users;
               $scope.rooms = rooms.rooms;
@@ -530,12 +530,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     });
 
-    socket.on('message', function (id, message) {
+    socket.on('message', function (roomId, id, message) {
 
       users.getUsers('id', id, function (err, tempUsers) {
         var name = tempUsers[0].json.name;
 
-        messages.addMessage(name, message);
+        messages.addMessage(roomId, name, message);
         $scope.messages = messages.messages;
 
       });
@@ -556,7 +556,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       acceptFiles.addFile(acceptFile, function (err) {
 
         if (err) {
-          messages.addMessage(null, err);
+          messages.addMessage(null, null, err);
           $scope.messages = messages.messages;
           return false;
         }
@@ -566,14 +566,14 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         users.getUsers('id', id, function (err, users) {
 
           if (err) {
-            messages.addMessage(null, err);
+            messages.addMessage(null, null, err);
             $scope.messages = messages.messages;
             return false;
           }
 
           var from = users[0].json.name;
 
-          messages.addMessage(from, 'request to send file: ' + filename);
+          messages.addMessage(null, from, 'request to send file: ' + filename);
           $scope.messages = messages.messages;
 
           $scope.$emit('hasRequest');
@@ -594,7 +594,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
         socket.emit('fileData', id, fileId, data);
 
-        messages.addMessage(null, 'did send file');
+        messages.addMessage(null, null, 'did send file');
         $scope.messages = messages.messages;
 
         $scope.$emit('acceptRequest');
@@ -610,7 +610,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         var file = files[0];
         var filename = file.filename;
 
-        messages.addMessage(null, 'did get file: ' + filename);
+        messages.addMessage(null, null, 'did get file: ' + filename);
         $scope.messages = messages.messages;
 
         $scope.$emit('fileData');
@@ -637,7 +637,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
             $scope.acceptFiles = acceptFiles.acceptFiles;
 
-            messages.addMessage(name, 'rmsend: ' + filename);
+            messages.addMessage(null, name, 'rmsend: ' + filename);
             $scope.messages = messages.messages;
 
             $scope.$emit('rmsend');
