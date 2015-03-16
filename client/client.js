@@ -79,6 +79,12 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     function addSendFile() {
 
+      if (currentRoom === null) {
+        messages.addMessage(null, null, 'no room set');
+        $scope.messages = messages.messages;
+        return null;
+      }
+
       sendFiles.addFile(filename, data, function (err, json) {
 
         if (err) {
@@ -119,6 +125,18 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     var line = text;
     var argv = minimist(line.split(' '));
+
+    function has(property) {
+      if (argv.hasOwnProperty(property)) return true;
+      return false;
+    }
+
+    if (!has('connect') && !has('disconnect') && !has('createroom') && !has('rmroom') && !has('setroom')) {
+      if (currentRoom === null) {
+        messages.addMessage(null, null, 'no room set');
+        return null;
+      }
+    }
 
     var argvLength = 0;
     for (p in argv) {

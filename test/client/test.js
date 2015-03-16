@@ -55,6 +55,31 @@ describe('client', function () {
 
   });
 
+  describe('waiting for room', function () {
+
+    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+
+    it('should get error message no room set on send message', function () {
+
+      $scope.text = 'something';
+      $scope.submit();
+
+      expect($scope.messages[$scope.messages.length - 1].message).to.eql('no room set');
+
+    });
+
+    it('should get error message no room set on send request', function () {
+
+      $scope.tempAddFile('something.json', 'some data');
+
+      expect($scope.messages[$scope.messages.length - 1].message).to.eql('no room set');
+
+    });
+
+  });
+
   describe('tempjson', function () {
 
     it('should have message json:', function () {
@@ -559,6 +584,7 @@ describe('client', function () {
 
     beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
     beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    beforeEach(function (done) { setRoom($scope, $secondScope, done) });
     afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
 
     it('should send request', function (done) {
