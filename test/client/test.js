@@ -533,6 +533,7 @@ describe('client', function () {
 
     beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
     beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    beforeEach(function (done) { setRoom($scope, $secondScope, done)});
     afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
 
     it('should send message', function (done) {
@@ -710,6 +711,33 @@ function somethingConnect($scope, $secondScope, fn) {
     $scope.submit();
 
   }
+
+}
+
+function setRoom($scope, $secondScope, fn) {
+
+  $secondScope.$on('createroom', function () {
+
+    $secondScope.$on('joinroom', function () {
+
+      $secondScope.$on('setroom', function () {
+
+        fn();
+
+      });
+
+      $secondScope.text = '--setroom something';
+      $secondScope.submit();
+
+    });
+
+    $scope.text = '--setroom something';
+    $scope.submit();
+
+  });
+
+  $scope.text = '--createroom something';
+  $scope.submit();
 
 }
 
