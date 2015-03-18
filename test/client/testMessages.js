@@ -29,4 +29,25 @@ describe('messages', function () {
 
   });
 
+  describe('getMessages', function () {
+
+    it('should get messages', function (done) {
+
+      messages.addMessage('0', 'someone', 'something');
+      messages.addMessage('1', 'someone', 'something');
+
+      messages.getMessages('roomId', '0', function (err, messages) {
+
+        expect(err).to.eql(null);
+        expect(messages.length).to.eql(1);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+
 });

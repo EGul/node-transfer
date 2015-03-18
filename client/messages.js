@@ -19,6 +19,15 @@ function messagesFactory() {
 
     }
 
+    this.getMessages = function (property, value, fn) {
+
+      var tempMessages = this.messages.filter(function (e) {
+        if (e[property] === value) return e;
+      });
+
+      fn(null, tempMessages);
+    }
+
   }
 
 }

@@ -729,17 +729,68 @@ describe('client', function () {
       $scope.text = 'something';
       $scope.submit();
 
-      expect($scope.messages.length).to.eql(5);
+      expect($scope.messages.length).to.eql(1);
 
       $secondScope.$on('message', function () {
 
-        expect($secondScope.messages.length).to.eql(4);
+        expect($secondScope.messages.length).to.eql(1);
 
         done();
 
       });
 
     });
+
+    it('should get message from other room', function (done) {
+
+      $secondScope.$on('message', function () {
+        expect($scope.messages.length).to.eql(1);
+        expect($secondScope.messages.length).to.eql(0);
+        done();
+      });
+
+      $secondScope.$on('joinroom', function () {
+        $scope.text = 'something';
+        $scope.submit();
+      });
+
+      $secondScope.$on('createroom', function () {
+        $scope.text = '--setroom temp';
+        $scope.submit();
+      });
+
+      $scope.text = '--createroom temp';
+      $scope.submit();
+
+    });
+
+    it('should set room and get messages in room', function () {
+
+      $secondScope.$on('setroom', function () {
+        expect($secondScope.messages.length).to.eql(1);
+        done();
+      });
+
+      $secondScope.$on('message', function () {
+        $secondScope.text = '--setroom temp';
+        $secondScope.submit();
+      });
+
+      $secondScope.$on('joinroom', function () {
+        $scope.text = 'something';
+        $scope.submit();
+      });
+
+      $secondScope.$on('createroom', function () {
+        $scope.text = '--setroom temp';
+        $scope.submit();
+      });
+
+      $scope.text = '--createroom temp';
+      $scope.submit();
+
+    });
+
 
   });
 
