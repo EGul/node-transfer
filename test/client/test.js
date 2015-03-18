@@ -892,51 +892,46 @@ function somethingSetTempJson($scope, $secondScope) {
 
 function somethingConnect($scope, $secondScope, fn) {
 
-  if (typeof $scope.socket === 'undefined') {
+    var removeOnConnect= null;
+    var removeOnUserJson = null;
 
-    $scope.$on('connect', function () {
+    removeOnUserJson = $secondScope.$on('userjson', function () {
+      removeOnUserJson();
+      fn();
+    });
 
-      if (typeof $secondScope.socket === 'undefined') {
-
-        $secondScope.$on('userjson', function () { fn() });
-
-        $secondScope.text = '--connect';
-        $secondScope.submit();
-
-      }
-      else {
-        fn();
-      }
-
+    removeOnConnect = $scope.$on('connect', function () {
+      removeOnConnect();
+      $secondScope.text = '--connect';
+      $secondScope.submit();
     });
 
     $scope.text = '--connect';
     $scope.submit();
 
-  }
-
 }
 
 function setRoom($scope, $secondScope, fn) {
 
-  $secondScope.$on('createroom', function () {
+  var removeOnCreateRoom = null;
+  var removeOnJoinRoom = null;
+  var removeOnSetRoom = null;
 
-    $secondScope.$on('joinroom', function () {
+  removeOnSetRoom = $secondScope.$on('setroom', function () {
+    removeOnSetRoom();
+    fn();
+  });
 
-      $secondScope.$on('setroom', function () {
+  removeOnJoinRoom = $secondScope.$on('joinroom', function () {
+    removeOnJoinRoom();
+    $secondScope.text = '--setroom something';
+    $secondScope.submit();
+  });
 
-        fn();
-
-      });
-
-      $secondScope.text = '--setroom something';
-      $secondScope.submit();
-
-    });
-
+  removeOnCreateRoom = $secondScope.$on('createroom', function () {
+    removeOnCreateRoom();
     $scope.text = '--setroom something';
     $scope.submit();
-
   });
 
   $scope.text = '--createroom something';
@@ -952,8 +947,18 @@ function somethingDisconnect($scope, $secondScope, fn) {
     if (count == 2) fn();
   }
 
-  $scope.$on('disconnect', function () { did() });
-  $secondScope.$on('disconnect', function () { did() });
+  var removeOnDisconnect = null;
+  var secondRemoveOnDisconnect = null;
+
+  removeOnDisconnect = $scope.$on('disconnect', function () {
+    removeOnDisconnect();
+    did()
+  });
+
+  secondRemoveOnDisconnect = $secondScope.$on('disconnect', function () {
+    secondRemoveOnDisconnect();
+    did()
+  });
 
   if ($scope.socket.connected) {
     $scope.text = '--disconnect';
