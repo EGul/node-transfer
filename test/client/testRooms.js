@@ -248,4 +248,24 @@ describe('rooms', function () {
 
   });
 
+  describe('getUsersByRoomId', function () {
+
+    it('should get users by room id', function (done) {
+
+      rooms.joinRoom('0', '0', function () { });
+      rooms.joinRoom('1', '1', function () { });
+
+      rooms.getUsersByRoomId('0', function (err, roomUsers) {
+
+        expect(err).to.eql(null);
+        expect(roomUsers.length).to.eql(1);
+
+        done();
+
+      });
+
+    });
+
+  });
+
 });

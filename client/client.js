@@ -42,7 +42,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   $scope.rooms = rooms.rooms;
   $scope.roomsUsers = rooms.users;
   $scope.messages = [];
-  $scope.users = users.users;
+  $scope.users = [];
   $scope.sendFiles = sendFiles.sendFiles;
   $scope.acceptFiles = acceptFiles.acceptFiles;
 
@@ -245,7 +245,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       $scope.currentRoom = currentRoom;
       $scope.rooms = rooms.rooms;
       $scope.roomsUsers = rooms.users;
-      $scope.users = users.users;
+      $scope.users = [];
       $scope.sendFiles = sendFiles.sendFiles;
       $scope.acceptFiles = acceptFiles.acceptFiles;
 
@@ -269,11 +269,29 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         return false;
       }
 
+      if (currentRoom !== null) {
+        if (currentRoom.id === tempRooms[0].id) {
+          addMessage(null, null, 'room already set');
+          return null;
+        }
+      }
+
       var room = tempRooms[0];
       var roomId = room.id;
 
       messages.getMessages('roomId', roomId, function (err, roomMessages) {
         $scope.messages = roomMessages;
+      });
+
+      $scope.users = [];
+      rooms.getUsersByRoomId(room.id, function (err, roomUsers) {
+        roomUsers.forEach(function (e) {
+          users.getUsers('id', e.userId, function (err, users) {
+            var user = users[0];
+            $scope.users.push(user);
+          });
+
+        });
       });
 
       var previousRoom = currentRoom;
@@ -445,7 +463,6 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     socket.on('something', function (json) {
 
       users.addUser(json);
-      $scope.users = users.users;
 
       addMessage(null, json.name, 'has connected');
 
@@ -473,7 +490,6 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     socket.on('userJson', function (json) {
 
       users.addUser(json);
-      $scope.users = users.users;
 
       $scope.$emit('userjson');
 
@@ -511,9 +527,9 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
               addMessage(null, name, 'has disconnected');
 
-              $scope.roomsUsers = rooms.users;
               $scope.rooms = rooms.rooms;
-              $scope.users = users.users;
+              $scope.roomsUsers = rooms.users;
+
               $scope.acceptFiles = acceptFiles.acceptFiles;
 
               $scope.$emit('didDisconnect');
@@ -565,6 +581,15 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       rooms.joinRoom(roomId, fromId, function (err) {
 
+        if (currentRoom !== null) {
+          if (currentRoom.id === roomId) {
+            users.getUsers('id', fromId, function (err, tempUsers) {
+              var user = tempUsers[0];
+              $scope.users.push(user);
+            });
+          }
+        }
+
         $scope.roomsUsers = rooms.users;
 
         $scope.$emit('joinroom', rooms);
@@ -576,6 +601,21 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     socket.on('leaveRoom', function (roomId, fromId) {
 
       rooms.leaveRoom(roomId, fromId, function (err) {
+
+        if (currentRoom !== null) {
+
+          $scope.users = [];
+
+          rooms.getUsersByRoomId(currentRoom.id, function (err, roomUsers) {
+            roomUsers.forEach(function (e) {
+              users.getUsers('id', e.userId, function (err, tempUsers) {
+                var user = tempUsers[0];
+                $scope.users.push(user);
+              });
+            });
+          });
+
+        }
 
         $scope.roomsUsers = rooms.users;
 

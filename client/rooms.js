@@ -128,6 +128,16 @@ function roomsFactory(roomFactory) {
       fn(null);
     }
 
+    this.getUsersByRoomId = function (roomId, fn) {
+
+      var tempUsers = this.users.filter(function (e) {
+        if (e.roomId === roomId) return e;
+      });
+
+      if (!tempUsers.length) return fn('user does not exist', tempUsers);
+      fn(null, tempUsers);
+    }
+
   }
 
 }
