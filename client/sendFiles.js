@@ -8,9 +8,10 @@ function sendFilesFactory() {
 
     this.sendFiles = [];
 
-    this.addFile = function (filename, data, fn) {
+    this.addFile = function (roomId, filename, data, fn) {
 
       var sendFile = {
+        roomId: roomId,
         toId: null,
         fileId: uuid.v1(),
         filename: filename,

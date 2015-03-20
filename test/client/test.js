@@ -862,58 +862,225 @@ describe('client', function () {
     beforeEach(function (done) { setRoom($scope, $secondScope, done) });
     afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
 
-    it('should send request', function (done) {
+    describe('send request', function () {
 
-      $scope.tempAddFile('something.json', 'some data');
+      it('should send request', function (done) {
 
-      expect($scope.messages[$scope.messages.length - 1].message).to.eql('did upload file');
-      expect($scope.sendFiles.length).to.eql(1);
+        $scope.tempAddFile('something.json', 'some data');
 
-      $secondScope.$on('hasRequest', function () {
+        expect($scope.messages[$scope.messages.length - 1].message).to.eql('did upload file');
+        expect($scope.sendFiles.length).to.eql(1);
 
-        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('request to send file: something.json');
-        expect($secondScope.acceptFiles.length).to.eql(1);
+        $secondScope.$on('hasRequest', function () {
 
-        done();
+          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('request to send file: something.json');
+          expect($secondScope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
 
       });
 
     });
 
-    it('should add send file connect then send request', function (done) {
+    describe('remove request', function () {
 
-      $secondScope.$on('didDisconnect', function () {
+      it('should remove request', function (done) {
 
-        $scope.$on('didcreateroom', function () {
+        $scope.tempAddFile('something.json', 'some data');
 
-          $scope.$on('setroom', function () {
+        $secondScope.$on('hasRequest', function () {
 
-            $secondScope.$on('hasRequest', function () {
-
-              expect($secondScope.acceptFiles.length).to.eql(1);
-
-              done();
-
-            });
-
-            $scope.tempAddFile('something.json', 'some data');
-            $scope.text = '--connect';
-            $scope.submit();
-
-          });
-
-          $scope.text = '--setroom something';
+          $scope.text = '--rmsend something.json';
           $scope.submit();
+
+          expect($scope.messages[$scope.messages.length - 1].message).to.eql('did remove file');
+          expect($scope.sendFiles.length).to.eql(0);
 
         });
 
-        $scope.text = '--createroom something';
+        $secondScope.$on('rmsend', function () {
+
+          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('rmsend: something.json');
+          expect($secondScope.acceptFiles.length).to.eql(0);
+
+          done();
+
+        });
+
+      });
+
+      it('should not remove request from different room', function (done) {
+
+        $secondScope.$on('leaveroom', function () {
+
+          $scope.text = '--rmsend something.json';
+          $scope.submit();
+
+          expect($scope.messages[$scope.messages.length - 1].message).to.eql('file does not exist in this room');
+
+          done();
+
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+        $scope.tempAddFile('something.json', 'some data');
+        $scope.text = '--setroom temp';
         $scope.submit();
 
       });
 
-      $scope.text = '--disconnect';
-      $scope.submit();
+    });
+
+    describe('setroom', function () {
+
+      it('should get sendfiles in room', function (done) {
+
+        var leaveRoomCount = 0;
+
+        $secondScope.$on('leaveroom', function () {
+
+          leaveRoomCount++;
+
+          if (leaveRoomCount === 1) {
+            expect($scope.sendFiles.length).to.eql(0);
+            $scope.text = '--setroom something';
+            $scope.submit();
+          }
+
+          if (leaveRoomCount === 2) {
+            expect($scope.sendFiles.length).to.eql(1);
+            done();
+          }
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--setroom temp';
+          $scope.submit();
+        });
+
+        $secondScope.$on('createroom', function () {
+          $scope.tempAddFile('something.json', 'some data');
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+
+      });
+
+    });
+
+    describe('remove room', function () {
+
+      it('should remove sendfiles in current room', function (done) {
+
+        $secondScope.$on('removeroom', function () {
+
+          expect($scope.sendFiles.length).to.eql(0);
+
+          done();
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--rmroom something';
+          $scope.submit();
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
+
+      });
+
+      it('should not remove sendfiles in current room when different room is removed', function (done) {
+
+        $secondScope.$on('removeroom', function () {
+          expect($scope.sendFiles.length).to.eql(1);
+          done();
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--rmroom temp';
+          $scope.submit();
+        });
+
+        $secondScope.$on('createroom', function () {
+          $scope.tempAddFile('something.json', 'some data');
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+
+      });
+
+    });
+
+    describe('connect', function () {
+
+      it('should add send file connect then send request', function (done) {
+
+        $secondScope.$on('didDisconnect', function () {
+
+          $scope.$on('didcreateroom', function () {
+
+            $scope.$on('setroom', function () {
+
+              $secondScope.$on('hasRequest', function () {
+
+                expect($secondScope.acceptFiles.length).to.eql(1);
+
+                done();
+
+              });
+
+              $scope.tempAddFile('something.json', 'some data');
+              $scope.text = '--connect';
+              $scope.submit();
+
+            });
+
+            $scope.text = '--setroom something';
+            $scope.submit();
+
+          });
+
+          $scope.text = '--createroom something';
+          $scope.submit();
+
+        });
+
+        $scope.text = '--disconnect';
+        $scope.submit();
+
+      });
+
+    });
+
+    describe('disconnect', function () {
+
+      it('should remove request on disconnect', function (done) {
+
+        $scope.tempAddFile('something.json', 'some data');
+
+        $secondScope.$on('hasRequest', function () {
+
+          $secondScope.$on('didDisconnect', function () {
+
+            expect($scope.sendFiles.length).to.eql(0);
+            expect($secondScope.acceptFiles.length).to.eql(0);
+
+            done();
+
+          });
+
+          $scope.text = '--disconnect';
+          $scope.submit();
+
+        });
+
+      });
 
     });
 
@@ -939,53 +1106,6 @@ describe('client', function () {
         expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('did get file: something.json');
 
         done();
-
-      });
-
-    });
-
-    it('should remove request', function (done) {
-
-      $scope.tempAddFile('something.json', 'some data');
-
-      $secondScope.$on('hasRequest', function () {
-
-        $scope.text = '--rmsend something.json';
-        $scope.submit();
-
-        expect($scope.messages[$scope.messages.length - 1].message).to.eql('did remove file');
-        expect($scope.sendFiles.length).to.eql(0);
-
-      });
-
-      $secondScope.$on('rmsend', function () {
-
-        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('rmsend: something.json');
-        expect($secondScope.acceptFiles.length).to.eql(0);
-
-        done();
-
-      });
-
-    });
-
-    it('should remove request on disconnect', function (done) {
-
-      $scope.tempAddFile('something.json', 'some data');
-
-      $secondScope.$on('hasRequest', function () {
-
-        $secondScope.$on('didDisconnect', function () {
-
-          expect($scope.sendFiles.length).to.eql(0);
-          expect($secondScope.acceptFiles.length).to.eql(0);
-
-          done();
-
-        });
-
-        $scope.text = '--disconnect';
-        $scope.submit();
 
       });
 

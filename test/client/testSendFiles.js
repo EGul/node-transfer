@@ -21,7 +21,7 @@ describe('sendFiles', function () {
 
     it('should add file', function () {
 
-      sendFiles.addFile('something.json', 'some data', function (err, json) {
+      sendFiles.addFile('0', 'something.json', 'some data', function (err, json) {
 
         expect(err).to.eql(null);
         expect(json).to.not.eql(null);
@@ -36,7 +36,7 @@ describe('sendFiles', function () {
   describe('getFiles', function () {
 
     beforeEach(function (done) {
-      sendFiles.addFile('something.json', 'some data', function (err) { done() });
+      sendFiles.addFile('0', 'something.json', 'some data', function (err) { done() });
     });
 
     afterEach(function (done) {
@@ -75,7 +75,7 @@ describe('sendFiles', function () {
   describe('removeFiles', function () {
 
     beforeEach(function (done) {
-      sendFiles.addFile('something.json', 'some data', function (err) { done() });
+      sendFiles.addFile('0', 'something.json', 'some data', function (err) { done() });
     });
 
     afterEach(function (done) {
@@ -114,7 +114,7 @@ describe('sendFiles', function () {
   describe('removeAllFiles', function () {
 
     before(function (done) {
-      sendFiles.addFile('something.json', 'some data', function (err) { done() });
+      sendFiles.addFile('0', 'something.json', 'some data', function (err) { done() });
     });
 
     it('should remove all files', function () {
