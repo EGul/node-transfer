@@ -8,7 +8,14 @@ function acceptFilesFactory() {
 
     this.acceptFiles = [];
 
-    this.addFile = function (acceptFile, fn) {
+    this.addFile = function (id, fileId, filename, stats, fn) {
+
+      var acceptFile = {
+        id: id,
+        fileId: fileId,
+        filename: filename,
+        stats: stats
+      };
 
       this.acceptFiles.push(acceptFile);
 

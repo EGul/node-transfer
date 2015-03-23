@@ -662,14 +662,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     socket.on('hasRequest', function (id, fileId, filename, stats) {
 
-      var acceptFile = {
-        id: id,
-        fileId: fileId,
-        filename: filename,
-        stats: stats
-      };
-
-      acceptFiles.addFile(acceptFile, function (err) {
+      acceptFiles.addFile(id, fileId, filename, stats, function (err) {
 
         if (err) {
           addMessage(null, null, err);
