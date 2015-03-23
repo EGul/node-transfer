@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/temp-name-here/node-transfer"
+    "url": "https://github.com/EGul/node-transfer"
   },
-  "author": "temp-name-here",
+  "author": "EGul",
   "license": "MIT",
   "dependencies": {
     "angular": "^1.3.13",
