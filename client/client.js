@@ -44,7 +44,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   $scope.messages = [];
   $scope.users = [];
   $scope.sendFiles = [];
-  $scope.acceptFiles = acceptFiles.acceptFiles;
+  $scope.acceptFiles = [];
 
   addMessage(null, null, 'json: ');
 
@@ -92,7 +92,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         addMessage(null, null, 'did upload file');
         $scope.sendFiles.push(json);
 
-        socket.emit('hasRequest', null, json.fileId, json.filename, null);
+        socket.emit('hasRequest', currentRoom.id, null, json.fileId, json.filename, null);
 
       });
 
@@ -217,7 +217,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       socket.emit('something', tempJson);
 
       sendFiles.sendFiles.forEach(function (e) {
-        socket.emit('hasRequest', null, e.fileId, e.filename, e.stats);
+        socket.emit('hasRequest', e.roomId, null, e.fileId, e.filename, e.stats);
       });
 
       addMessage(null, null, 'did connect');
@@ -246,7 +246,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       $scope.roomsUsers = rooms.users;
       $scope.users = [];
       $scope.sendFiles = [];
-      $scope.acceptFiles = acceptFiles.acceptFiles;
+      $scope.acceptFiles = [];
 
       $scope.$emit('disconnect');
 
@@ -297,6 +297,11 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       sendFiles.getFiles('roomId', room.id, function (err, files) {
         if (err) return null;
         $scope.sendFiles = files;
+      });
+
+      $scope.acceptFiles = [];
+      acceptFiles.getFiles('roomId', room.id, function (err, files) {
+        $scope.acceptFiles = files;
       });
 
       var previousRoom = currentRoom;
@@ -463,10 +468,21 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     var filename = argv['accept'];
 
-    acceptFiles.getFiles('filename', filename, function (err, files) {
+    acceptFiles.getFiles('roomId', currentRoom.id, function (err, files) {
 
       if (err) {
         addMessage(null, null, err);
+        $scope.$emit('acceptrequesterror');
+        return null
+      }
+
+      files = files.filter(function (e) {
+        if (e.filename === filename) return e;
+      });
+
+      if (!files.length) {
+        addMessage(null, null, 'file does not exist');
+        $scope.$emit('acceptrequesterror');
         return null;
       }
 
@@ -502,7 +518,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       }
 
       sendFiles.sendFiles.forEach(function (e) {
-        socket.emit('hasRequest', e.toId, e.fileId, e.filename, e.stats);
+        socket.emit('hasRequest', e.roomId, e.toId, e.fileId, e.filename, e.stats);
       });
 
       $scope.$emit('something');
@@ -552,7 +568,9 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
               $scope.rooms = rooms.rooms;
               $scope.roomsUsers = rooms.users;
 
-              $scope.acceptFiles = acceptFiles.acceptFiles;
+              $scope.acceptFiles = $scope.acceptFiles.filter(function (e) {
+                if (e.id !== id) return e;
+              });
 
               $scope.$emit('didDisconnect');
 
@@ -585,15 +603,20 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         if (currentRoom.id === roomId) {
           currentRoom = null;
           $scope.currentRoom = currentRoom;
+          $scope.acceptFiles = [];
         }
       }
 
       rooms.removeRooms('id', roomId, function (err) {
 
-        $scope.rooms = rooms.rooms;
-        $scope.roomsUsers = rooms.users;
+        acceptFiles.removeFiles('roomId', roomId, function (err) {
 
-        $scope.$emit('removeroom', rooms);
+          $scope.rooms = rooms.rooms;
+          $scope.roomsUsers = rooms.users;
+
+          $scope.$emit('removeroom', rooms);
+
+        });
 
       });
 
@@ -660,16 +683,20 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     });
 
-    socket.on('hasRequest', function (id, fileId, filename, stats) {
+    socket.on('hasRequest', function (roomId, id, fileId, filename, stats) {
 
-      acceptFiles.addFile(id, fileId, filename, stats, function (err) {
+      acceptFiles.addFile(roomId, id, fileId, filename, stats, function (err) {
 
         if (err) {
           addMessage(null, null, err);
           return false;
         }
 
-        $scope.acceptFiles = acceptFiles.acceptFiles;
+        if (currentRoom !== null) {
+          acceptFiles.getFiles('roomId', currentRoom.id, function (err, files) {
+            $scope.acceptFiles = files;
+          });
+        }
 
         users.getUsers('id', id, function (err, users) {
 
@@ -739,7 +766,9 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
           acceptFiles.removeFiles('fileId', fileId, function (err) {
 
-            $scope.acceptFiles = acceptFiles.acceptFiles;
+            $scope.acceptFiles = $scope.acceptFiles.filter(function (e) {
+              if (e.fileId !== fileId) return e;
+            });
 
             addMessage(null, name, 'rmsend: ' + filename);
 

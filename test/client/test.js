@@ -882,6 +882,78 @@ describe('client', function () {
 
       });
 
+      it('should send request from different room', function (done) {
+
+        $secondScope.$on('hasRequest', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(0);
+
+          done();
+
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+        $scope.text = '--setroom temp';
+        $scope.submit();
+        $scope.tempAddFile('something.json', 'some data');
+
+      });
+
+    });
+
+    describe('accept request', function () {
+
+      it('should accept request', function (done) {
+
+        $scope.tempAddFile('something.json', 'some data');
+
+        $secondScope.$on('hasRequest', function () {
+
+          $secondScope.text = '--accept something.json';
+          $secondScope.submit();
+
+        });
+
+        $scope.$on('acceptRequest', function () {
+
+          expect($scope.messages[$scope.messages.length - 1].message).to.eql('did send file');
+
+        });
+
+        $secondScope.$on('fileData', function () {
+
+          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('did get file: something.json');
+
+          done();
+
+        });
+
+      });
+
+      it('should not accept request from different room', function (done) {
+
+        $secondScope.$on('acceptrequesterror', function () {
+
+          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('file does not exist');
+
+          done();
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $secondScope.text = '--accept something.json';
+          $secondScope.submit();
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+        $scope.text = '--setroom temp';
+        $scope.submit();
+        $scope.tempAddFile('something.json', 'some data');
+
+      });
+
     });
 
     describe('remove request', function () {
@@ -908,6 +980,27 @@ describe('client', function () {
           done();
 
         });
+
+      });
+
+      it('should remove request from different room', function (done) {
+
+        $secondScope.$on('rmsend', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
+        $scope.text = '--createroom temp';
+        $scope.submit();
+        $scope.text = '--setroom temp';
+        $scope.submit();
+        $scope.tempAddFile('temp.json', 'some data')
+        $scope.text = '--rmsend temp.json';
+        $scope.submit();
 
       });
 
@@ -971,6 +1064,30 @@ describe('client', function () {
 
       });
 
+      it('should get acceptfiles in room', function (done) {
+
+        $secondScope.$on('setroom', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+
+          $secondScope.text = '--setroom temp';
+          $secondScope.submit();
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+        $scope.text = '--setroom temp';
+        $scope.submit();
+        $scope.tempAddFile('something.json', 'some data');
+
+      });
+
     });
 
     describe('remove room', function () {
@@ -1015,6 +1132,92 @@ describe('client', function () {
 
       });
 
+      it('should remove acceptfiles on remove room', function () {
+
+        $scope.$on('removeroom', function () {
+
+          expect($scope.acceptFiles.length).to.eql(0);
+
+          done();
+
+        });
+
+        $scope.$on('hasRequest', function () {
+          $scope.text = '--rmroom something';
+          $scope.submit();
+        });
+
+        $secondScope.tempAddFile('something.json', 'some data');
+
+      });
+
+      it('should remove acceptfiles on user remove room', function (done) {
+
+        $secondScope.$on('removeroom', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(0);
+
+          done();
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--rmroom something'
+          $scope.submit();
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
+
+      });
+
+      it('should not remove acceptfiles on different remove room', function (done) {
+
+        $scope.$on('didremoveroom', function () {
+
+          expect($scope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
+
+        $scope.$on('hasRequest', function () {
+          $scope.text = '--rmroom temp';
+          $scope.submit();
+        });
+
+        $scope.$on('didcreateroom', function () {
+          $secondScope.tempAddFile('something.json', 'some data');
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+
+      });
+
+      it('should not remove accept files on user different remove room', function (done) {
+
+        $secondScope.$on('removeroom', function () {
+
+          expect($secondScope.acceptFiles.length).to.eql(1);
+
+          done();
+
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--rmroom temp';
+          $scope.submit();
+        });
+
+        $secondScope.$on('createroom', function () {
+          $scope.tempAddFile('something.json', 'some data');
+        });
+
+        $scope.text = '--createroom temp';
+        $scope.submit();
+
+      });
+
     });
 
     describe('connect', function () {
@@ -1029,7 +1232,7 @@ describe('client', function () {
 
               $secondScope.$on('hasRequest', function () {
 
-                expect($secondScope.acceptFiles.length).to.eql(1);
+                expect($secondScope.acceptFiles.length).to.eql(0);
 
                 done();
 
@@ -1082,30 +1285,41 @@ describe('client', function () {
 
       });
 
-    });
+      it('should remove acceptfiles on disconnect', function (done) {
 
-    it('should accept request', function (done) {
+        $secondScope.$on('disconnect', function () {
 
-      $scope.tempAddFile('something.json', 'some data');
+          expect($secondScope.acceptFiles.length).to.eql(0);
 
-      $secondScope.$on('hasRequest', function () {
+          done();
 
-        $secondScope.text = '--accept something.json';
-        $secondScope.submit();
+        });
+
+        $secondScope.$on('hasRequest', function () {
+          $secondScope.text = '--disconnect';
+          $secondScope.submit();
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
 
       });
 
-      $scope.$on('acceptRequest', function () {
+      it('should remove acceptfiles on user disconnect', function (done) {
 
-        expect($scope.messages[$scope.messages.length - 1].message).to.eql('did send file');
+        $secondScope.$on('didDisconnect', function () {
 
-      });
+          expect($secondScope.acceptFiles.length).to.eql(0);
 
-      $secondScope.$on('fileData', function () {
+          done();
 
-        expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('did get file: something.json');
+        });
 
-        done();
+        $secondScope.$on('hasRequest', function () {
+          $scope.text = '--disconnect';
+          $scope.submit();
+        });
+
+        $scope.tempAddFile('something.json', 'some data');
 
       });
 

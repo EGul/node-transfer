@@ -8,9 +8,10 @@ function acceptFilesFactory() {
 
     this.acceptFiles = [];
 
-    this.addFile = function (id, fileId, filename, stats, fn) {
+    this.addFile = function (roomId, id, fileId, filename, stats, fn) {
 
       var acceptFile = {
+        roomId: roomId,
         id: id,
         fileId: fileId,
         filename: filename,

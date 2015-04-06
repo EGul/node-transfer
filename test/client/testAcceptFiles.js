@@ -21,7 +21,7 @@ describe('acceptFiles', function () {
 
     it('should add accept file', function () {
 
-      acceptFiles.addFile(null, null, null, null, function (err) {
+      acceptFiles.addFile(null, null, null, null, null, function (err) {
 
         expect(err).to.eql(null);
         expect(acceptFiles.acceptFiles.length).to.eql(1);
@@ -35,7 +35,7 @@ describe('acceptFiles', function () {
   describe('getFiles', function () {
 
     beforeEach(function (done) {
-      acceptFiles.addFile(null, '1', null, null, function (err) { done() });
+      acceptFiles.addFile(null, null, '1', null, null, function (err) { done() });
     });
 
     it('should get error file does not exist', function () {
@@ -65,7 +65,7 @@ describe('acceptFiles', function () {
   describe('removeAccept', function () {
 
     beforeEach(function (done) {
-      acceptFiles.addFile(null, '1', null, null, function (err) { done() });
+      acceptFiles.addFile(null, null, '1', null, null, function (err) { done() });
     });
 
     it('should get error file does not exist', function () {
