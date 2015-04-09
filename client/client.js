@@ -200,6 +200,11 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   function handleConnect(argv) {
 
     if (tempJson === null) return $scope.$emit('connectError');
+    if (socket !== null && socket.connected) {
+      addMessage(null, null, 'already connected');
+      $scope.$emit('connectError');
+      return false;
+    }
 
     var options = {
       'force new connection': true

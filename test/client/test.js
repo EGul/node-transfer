@@ -139,6 +139,25 @@ describe('client', function () {
 
     });
 
+    it('should get error already connected', function (done) {
+
+      somethingSetTempJson($scope, $secondScope);
+      
+      $scope.$on('connectError', function () {
+	expect($scope.messages[$scope.messages.length - 1].message).to.eql('already connected');
+	done();
+      });
+
+      $scope.$on('connect', function () {
+	$scope.text = '--connect';
+	$scope.submit();
+      });
+
+      $scope.text = '--connect';
+      $scope.submit();
+
+    });
+
   });
 
   describe('disconnect', function () {
