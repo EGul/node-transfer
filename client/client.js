@@ -608,20 +608,25 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         if (currentRoom.id === roomId) {
           currentRoom = null;
           $scope.currentRoom = currentRoom;
+	  $scope.sendFiles = [];
           $scope.acceptFiles = [];
         }
       }
 
       rooms.removeRooms('id', roomId, function (err) {
 
-        acceptFiles.removeFiles('roomId', roomId, function (err) {
+	sendFiles.removeFiles('roomId', roomId, function (err) {
 
-          $scope.rooms = rooms.rooms;
-          $scope.roomsUsers = rooms.users;
+	  acceptFiles.removeFiles('roomId', roomId, function (err) {
 
-          $scope.$emit('removeroom', rooms);
+	    $scope.rooms = rooms.rooms;
+	    $scope.roomsUsers = rooms.users;
 
-        });
+	    $scope.$emit('removeroom', rooms);
+
+	  });
+
+	});
 
       });
 

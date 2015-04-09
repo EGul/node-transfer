@@ -1111,7 +1111,7 @@ describe('client', function () {
 
     describe('remove room', function () {
 
-      it('should remove sendfiles in current room', function (done) {
+      it('should remove sendfiles on remove room', function (done) {
 
         $secondScope.$on('removeroom', function () {
 
@@ -1130,7 +1130,23 @@ describe('client', function () {
 
       });
 
-      it('should not remove sendfiles in current room when different room is removed', function (done) {
+      it('should remove sendfiles on user remove room', function (done) {
+
+	$secondScope.$on('removeroom', function () {
+	  expect($secondScope.sendFiles.length).to.eql(0);
+	  done();
+	});
+
+	$scope.$on('hasRequest', function () {
+	  $scope.text = '--rmroom something';
+	  $scope.submit();
+	});
+
+	$secondScope.tempAddFile('something.json', 'some data');
+
+      });
+
+      it('should not remove sendfiles on different room remove', function (done) {
 
         $secondScope.$on('removeroom', function () {
           expect($scope.sendFiles.length).to.eql(1);
@@ -1148,6 +1164,27 @@ describe('client', function () {
 
         $scope.text = '--createroom temp';
         $scope.submit();
+
+      });
+
+      it('should not remove sendfiles on user different remove room', function (done) {
+
+	$secondScope.$on('removeroom', function () {
+	  expect($secondScope.sendFiles.length).to.eql(1);
+	  done();
+	});
+
+	$scope.$on('hasRequest', function () {
+	  $scope.text = '--rmroom temp';
+	  $scope.submit();
+	});
+
+	$secondScope.$on('createroom', function () {
+	  $secondScope.tempAddFile('something.json', 'some data');
+	});
+
+	$scope.text = '--createroom temp'
+	$scope.submit();
 
       });
 
