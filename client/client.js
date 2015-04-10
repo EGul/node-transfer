@@ -3,6 +3,7 @@ var app = angular.module('app');
 
 app.controller('clientCtrl', clientCtrl);
 app.directive('usersDirective', usersDirective);
+app.directive('scrollMessagesDirective', scrollMessagesDirective);
 
 function usersDirective() {
 
@@ -21,6 +22,20 @@ function usersDirective() {
     ].join(''),
     link: function (scope, elem, attrs) {
 
+    }
+  }
+
+}
+
+function scrollMessagesDirective() {
+  console.log('something');
+  return {
+    restrict: 'A',
+    link: function (scope, elem, attrs) {
+      if (scope.$last) {
+	var temp = document.getElementById('messages');
+	temp.scrollTop = temp.scrollHeight;
+      }
     }
   }
 

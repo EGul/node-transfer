@@ -146,6 +146,8 @@
 
   position: absolute;
 
+  overflow-y: scroll;
+
   top: 0px;
   bottom: 36px;
   left: 153px;
