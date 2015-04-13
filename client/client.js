@@ -28,7 +28,6 @@ function usersDirective() {
 }
 
 function scrollMessagesDirective() {
-  console.log('something');
   return {
     restrict: 'A',
     link: function (scope, elem, attrs) {
