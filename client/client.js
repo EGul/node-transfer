@@ -190,6 +190,14 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
   }
 
+  $scope.select = function (argv) {
+
+    if (argv.hasOwnProperty('setroom')) {
+      handleSetRoom(argv);
+    }
+
+  }
+
   function addMessage(roomId, fromId, message) {
 
     messages.addMessage(roomId, fromId, message);
