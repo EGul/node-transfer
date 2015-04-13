@@ -195,6 +195,11 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       handleSetRoom(argv);
     }
 
+    if (argv.hasOwnProperty('accept')) {
+      console.log(argv);
+      handleAccept(argv);
+    }
+
   }
 
   function addMessage(roomId, fromId, message) {

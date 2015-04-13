@@ -289,6 +289,18 @@
 
 }
 
+#rightSomething #files .file .right .filename {
+
+  color: black;
+
+}
+
+#rightSomething #files .file .right .filename:hover {
+
+  cursor: pointer;
+
+}
+
 #rightSomething #files .file .right span {
 
   color: rgb(225, 225, 225);

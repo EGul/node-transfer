@@ -11,7 +11,7 @@ function rightSomethingDirective() {
     '<div class="file">',
     '<div class="box"></div>',
     '<div class="right">',
-    '{{ item.filename }}<br>',
+    '<span class="filename">{{ item.filename }}</span><br>',
     '<span>from</span>',
     '</div>',
     '</div>'
