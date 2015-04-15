@@ -2,43 +2,6 @@
 var app = angular.module('app');
 
 app.controller('clientCtrl', clientCtrl);
-app.directive('usersDirective', usersDirective);
-app.directive('scrollMessagesDirective', scrollMessagesDirective);
-
-function usersDirective() {
-
-  return {
-    restrict: 'A',
-    replace: true,
-    scope: true,
-    template: [
-    '<div class="user">',
-      '<div class="box"> </div>',
-      '<div class="right">',
-      '{{ item.json.name }}<br>',
-      '<span>something</span>',
-      '</div>',
-    '</div>'
-    ].join(''),
-    link: function (scope, elem, attrs) {
-
-    }
-  }
-
-}
-
-function scrollMessagesDirective() {
-  return {
-    restrict: 'A',
-    link: function (scope, elem, attrs) {
-      if (scope.$last) {
-	var temp = document.getElementById('messages');
-	temp.scrollTop = temp.scrollHeight;
-      }
-    }
-  }
-
-}
 
 function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFilesFactory, acceptFilesFactory) {
 
