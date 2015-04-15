@@ -84,6 +84,8 @@
 
 #leftSomething #mainUser #box {
 
+  border: 1px solid black;
+
   margin-top: 5px;
   margin-left: 5px;
 
@@ -119,6 +121,17 @@
   right: 0px;
 
   height: 25px;
+
+}
+
+#leftSomething #mainUser #secondBox #connect {
+
+  border: 1px solid black;
+
+  margin-left: 5px;
+
+  height: 25px;
+  width: 25px;
 
 }
 

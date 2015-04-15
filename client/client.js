@@ -154,15 +154,27 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
   $scope.select = function (argv) {
 
+    if (argv.hasOwnProperty('connect')) {
+      connectSelected();
+    }
+
     if (argv.hasOwnProperty('setroom')) {
       handleSetRoom(argv);
     }
 
     if (argv.hasOwnProperty('accept')) {
-      console.log(argv);
       handleAccept(argv);
     }
 
+  }
+
+  function connectSelected() {
+    if (socket === null || socket.connected === false) {
+      handleConnect();
+    }
+    else {
+      handleDisconnect();
+    }
   }
 
   function addMessage(roomId, fromId, message) {
