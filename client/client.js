@@ -134,6 +134,10 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       handleRemoveRoom(argv);
     }
 
+    if (argv.hasOwnProperty('listuser')) {
+      handleListUser(argv);
+    }
+
     if (argv.hasOwnProperty('listsend')) {
       handleListSend(argv);
     }
@@ -164,6 +168,10 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     if (argv.hasOwnProperty('accept')) {
       handleAccept(argv);
+    }
+
+    if (argv.hasOwnProperty('listuser')) {
+      handleListUser(argv);
     }
 
   }
@@ -393,6 +401,48 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         });
 
       });
+
+    });
+
+  }
+
+  function handleListUser(argv) {
+
+    var username = argv['listuser'];
+
+    rooms.getUsersByRoomId(currentRoom.id, function (err, roomUsers) {
+
+      if (err) {
+        addMessage(null, null, err);
+        $scope.$emit('listuser');
+        return false;
+      }
+
+      actualUsers = users.users.filter(function (e) {
+        for (var i = 0, l = roomUsers.length; i < l; i++) {
+          if (roomUsers[i].userId === e.json.id) return e;
+        }
+      });
+
+      var actualUsers = actualUsers.filter(function (e) {
+        if (e.json.name === username) return e;
+      });
+
+      if (actualUsers.length === 0) {
+        addMessage(null, null, 'user does not exist');
+        $scope.$emit('listuser');
+        return false;
+      }
+
+      var user = actualUsers[0];
+
+      /*
+      var newWindow = window.open();
+      newWindow.document.write(JSON.stringify(user.json));
+      */
+
+      addMessage(null, null, 'found user');
+      $scope.$emit('listuser');
 
     });
 

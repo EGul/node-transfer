@@ -9,7 +9,7 @@ function usersDirective() {
     template: [
     '<div class="user">',
       '<div class="box"> </div>',
-      '<div class="right">',
+      '<div class="right" ng-click="select({listuser: item.json.name})">',
       '{{ item.json.name }}<br>',
       '<span>something</span>',
       '</div>',

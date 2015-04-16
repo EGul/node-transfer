@@ -142,7 +142,7 @@ describe('client', function () {
     it('should get error already connected', function (done) {
 
       somethingSetTempJson($scope, $secondScope);
-      
+
       $scope.$on('connectError', function () {
 	expect($scope.messages[$scope.messages.length - 1].message).to.eql('already connected');
 	done();
@@ -215,6 +215,40 @@ describe('client', function () {
       expect($secondScope.users[0].json.name).to.eql('first');
 
     });
+
+  });
+
+  describe('list users', function () {
+
+    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
+    beforeEach(function (done) { setRoom($scope, $secondScope, done) });
+    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+
+    it ('should list user', function (done) {
+
+      $scope.$on('listuser', function () {
+        expect($scope.messages[$scope.messages.length -1 ].message).to.eql('found user');
+        done();
+      });
+
+      $scope.text = '--listuser second';
+      $scope.submit();
+
+    });
+
+    it('should get error user does not exist', function (done) {
+
+      $scope.$on('listuser', function () {
+        expect($scope.messages[$scope.messages.length - 1].message).to.eql('user does not exist');
+        done();
+      });
+
+      $scope.text = '--listuser doesnotexist';
+      $scope.submit();
+
+    });
+
 
   });
 

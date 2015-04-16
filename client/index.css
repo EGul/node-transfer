@@ -229,6 +229,8 @@
 
   height: 30px;
 
+  cursor: pointer;
+
 }
 
 #rightSomething #users .user .box {
