@@ -110,6 +110,38 @@ describe('client', function () {
 
   });
 
+  describe('user', function () {
+
+    it('should set user', function (done) {
+
+      $scope.$on('didSetUser', function () {
+        expect($scope.messages.length).to.eql(2);
+        expect($scope.messages[1].message).to.eql('did set user');
+        expect($scope.tempJson.name).to.eql('something');
+        done();
+      });
+
+      $scope.text = '--setuser something';
+      $scope.submit();
+
+    });
+
+    it('should not set user', function (done) {
+
+      $scope.$on('noUsernameProvided', function () {
+        expect($scope.messages.length).to.eql(2);
+        expect($scope.messages[1].message).to.eql('no username provided');
+        expect($scope.tempJson).to.eql(null);
+        done();
+      });
+
+      $scope.text = '--setuser';
+      $scope.submit();
+
+    });
+
+  });
+
   describe('connect', function () {
 
     it('should not connect', function (done) {

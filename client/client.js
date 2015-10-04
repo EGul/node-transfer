@@ -89,17 +89,22 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     var text = $scope.text;
     $scope.text = '';
 
-    if (tempJson === null) {
-      $scope.$emit('noJsonError');
-      return null;
-    }
-
     var line = text;
     var argv = minimist(line.split(' '));
 
     function has(property) {
       if (argv.hasOwnProperty(property)) return true;
       return false;
+    }
+
+    if (has('setuser')) {
+      handleUser(argv);
+      return null;
+    }
+
+    if (tempJson === null) {
+      $scope.$emit('noJsonError');
+      return null;
     }
 
     if (!has('connect') && !has('disconnect') && !has('createroom') && !has('rmroom') && !has('setroom')) {
@@ -204,6 +209,24 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         $scope.messages.push(tempMessage);
       }
     }
+
+  }
+
+  function handleUser(argv) {
+
+    var name = argv['setuser'];
+
+    if (typeof name !== 'string') {
+      addMessage(null, null, 'no username provided');
+      $scope.$emit('noUsernameProvided');
+      return null;
+    }
+
+    tempJson = {'name': name};
+    $scope.tempJson = tempJson;
+
+    addMessage(null, null, 'did set user');
+    $scope.$emit('didSetUser');
 
   }
 
