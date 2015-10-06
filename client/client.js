@@ -82,6 +82,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       addSendFile();
     }
 
+    $scope.$apply();
+
   }
 
   $scope.submit = function () {
@@ -264,6 +266,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       $scope.$emit('connect');
 
+      $scope.$apply();
+
     });
 
   }
@@ -287,6 +291,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       $scope.acceptFiles = [];
 
       $scope.$emit('disconnect');
+
+      $scope.$apply();
 
     });
 
@@ -611,6 +617,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       $scope.$emit('something');
 
+      $scope.$apply();
+
     });
 
     socket.on('userJson', function (json) {
@@ -662,6 +670,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
               $scope.$emit('didDisconnect');
 
+              $scope.$apply();
+
             });
 
           });
@@ -680,6 +690,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         $scope.roomsUsers = rooms.users;
 
         $scope.$emit('createroom');
+
+        $scope.$apply();
 
       });
 
@@ -707,6 +719,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
 	    $scope.$emit('removeroom', rooms);
 
+      $scope.$apply();
+
 	  });
 
 	});
@@ -731,6 +745,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         $scope.roomsUsers = rooms.users;
 
         $scope.$emit('joinroom', rooms);
+
+        $scope.$apply();
 
       });
 
@@ -759,6 +775,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
         $scope.$emit('leaveroom', rooms);
 
+        $scope.$apply();
+
       });
 
     });
@@ -769,6 +787,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         var name = tempUsers[0].json.name;
 
         addMessage(roomId, name, message);
+
+        $scope.$apply();
 
       });
 
@@ -804,6 +824,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
           $scope.$emit('hasRequest');
 
+          $scope.$apply();
+
         });
 
       });
@@ -824,6 +846,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
         $scope.$emit('acceptRequest');
 
+        $scope.$apply();
+
       });
 
     });
@@ -838,6 +862,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         addMessage(null, null, 'did get file: ' + filename);
 
         $scope.$emit('fileData');
+
+        $scope.$apply();
 
       });
 
@@ -866,6 +892,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
             addMessage(null, name, 'rmsend: ' + filename);
 
             $scope.$emit('rmsend');
+
+            $scope.$apply();
 
           });
 
