@@ -312,6 +312,20 @@ describe('client', function () {
 
       });
 
+      it('should not create room', function (done) {
+
+        $scope.$on('roomAlreadyExists', function () {
+          expect($scope.rooms.length).to.eql(1);
+          done();
+        });
+
+        $scope.text = '--createroom something';
+        $scope.submit();
+        $scope.text = '--createroom something';
+        $scope.submit();
+
+      });
+
     });
 
     describe('removeRoom', function () {

@@ -210,6 +210,39 @@ describe('rooms', function () {
 
   });
 
+  describe('hasRoom', function () {
+
+    it('should not have room', function (done) {
+
+      rooms.createRoom('something', function () {
+        rooms.hasRoom('not', function (hasRoom) {
+          expect(hasRoom).to.eql(false);
+          done();
+        });
+      });
+
+    });
+
+    it('should not have room', function (done) {
+      rooms.hasRoom('something', function (hasRoom) {
+        expect(hasRoom).to.eql(false);
+        done();
+      });
+    });
+
+    it('should have room', function (done) {
+
+      rooms.createRoom('something', function (err) {
+        rooms.hasRoom('something', function (hasRoom) {
+          expect(hasRoom).to.eql(true);
+          done();
+        });
+      });
+
+    });
+
+  });
+
   describe('joinRoom', function () {
 
     it('should join room', function (done) {

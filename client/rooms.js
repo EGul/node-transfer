@@ -107,6 +107,17 @@ function roomsFactory(roomFactory) {
       fn(null, tempRooms);
     }
 
+    this.hasRoom = function (name, fn) {
+
+      var tempRooms = this.rooms.filter(function (e) {
+        if (e.name === name) return e;
+      });
+
+      if (!tempRooms.length) return fn(false);
+      return fn(true);
+
+    }
+
     this.joinRoom = function (roomId, userId, fn) {
 
       var temp = {

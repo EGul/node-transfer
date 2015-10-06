@@ -359,6 +359,14 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
     var name = argv['createroom'];
 
+    rooms.hasRoom(name, function (hasRoom) {
+      if (hasRoom) {
+        addMessage(null, null, 'room already exists');
+        $scope.$emit('roomAlreadyExists');
+        return null;
+      }
+    });
+
     rooms.createRoom(name, function (err) {
 
       if (err) {
