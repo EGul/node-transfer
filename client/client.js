@@ -366,29 +366,31 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
     var name = argv['createroom'];
 
     rooms.hasRoom(name, function (hasRoom) {
+
       if (hasRoom) {
         addMessage(null, null, 'room already exists');
         $scope.$emit('roomAlreadyExists');
         return null;
       }
-    });
 
-    rooms.createRoom(name, function (err) {
+      rooms.createRoom(name, function (err) {
 
-      if (err) {
-        addMessage(null, null, err);
-        return false;
-      }
+        if (err) {
+          addMessage(null, null, err);
+          return false;
+        }
 
-      $scope.rooms = rooms.rooms;
-      $scope.roomsUsers = rooms.users;
+        $scope.rooms = rooms.rooms;
+        $scope.roomsUsers = rooms.users;
 
-      var room = rooms.rooms[rooms.rooms.length - 1];
-      var roomId = room.id;
+        var room = rooms.rooms[rooms.rooms.length - 1];
+        var roomId = room.id;
 
-      socket.emit('createRoom', roomId, name);
+        socket.emit('createRoom', roomId, name);
 
-      $scope.$emit('didcreateroom');
+        $scope.$emit('didcreateroom');
+
+      });
 
     });
 
