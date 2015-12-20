@@ -245,7 +245,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       'force new connection': true
     };
 
-    socket = io(window.location.href);
+    socket = io(window.location.href, options);
 
     socket.on('connect', function () {
 
