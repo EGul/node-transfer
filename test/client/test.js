@@ -1356,47 +1356,6 @@ describe('client', function () {
 
     });
 
-    describe('connect', function () {
-
-      it('should add send file connect then send request', function (done) {
-
-        $secondScope.$on('didDisconnect', function () {
-
-          $scope.$on('didcreateroom', function () {
-
-            $scope.$on('setroom', function () {
-
-              $secondScope.$on('hasRequest', function () {
-
-                expect($secondScope.acceptFiles.length).to.eql(0);
-
-                done();
-
-              });
-
-              $scope.tempAddFile('something.json', 'some data');
-              $scope.text = '--connect';
-              $scope.submit();
-
-            });
-
-            $scope.text = '--setroom something';
-            $scope.submit();
-
-          });
-
-          $scope.text = '--createroom something';
-          $scope.submit();
-
-        });
-
-        $scope.text = '--disconnect';
-        $scope.submit();
-
-      });
-
-    });
-
     describe('disconnect', function () {
 
       it('should remove request on disconnect', function (done) {

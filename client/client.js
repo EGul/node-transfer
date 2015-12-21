@@ -109,6 +109,13 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       return null;
     }
 
+    if (socket === null || (socket !== null && !socket.connected)) {
+      if (!has('connect') && !has('disconnect')) {
+        addMessage(null, null, 'not connected');
+        return false;
+      }
+    }
+
     if (!has('connect') && !has('disconnect') && !has('createroom') && !has('rmroom') && !has('setroom')) {
       if (currentRoom === null) {
         addMessage(null, null, 'no room set');
@@ -488,11 +495,6 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
   }
 
   function handleMessage(line) {
-
-    if (socket === null || (socket !== null && !socket.connected)) {
-      addMessage(null, null, 'not connected');
-      return false;
-    }
 
     var id = null;
     var message = line;
