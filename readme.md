@@ -20,7 +20,7 @@ Follow prompt
 Point URL to server  
 
 Steps to connect
-1. Drag and drap login json file(json file must contain name property) in main window or enter command --setuser [username]
+1. Drag and drap login json file(json file must contain name property) in main window or enter command --setuser [username]  
 2. Enter command --connect
 
 ## Client commands
