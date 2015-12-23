@@ -1001,60 +1001,6 @@ describe('client', function () {
 
     });
 
-    describe('accept request', function () {
-
-      it('should accept request', function (done) {
-
-        $scope.tempAddFile('something.json', 'some data');
-
-        $secondScope.$on('hasRequest', function () {
-
-          $secondScope.text = '--accept something.json';
-          $secondScope.submit();
-
-        });
-
-        $scope.$on('acceptRequest', function () {
-
-          expect($scope.messages[$scope.messages.length - 1].message).to.eql('did send file');
-
-        });
-
-        $secondScope.$on('fileData', function () {
-
-          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('did get file: something.json');
-
-          done();
-
-        });
-
-      });
-
-      it('should not accept request from different room', function (done) {
-
-        $secondScope.$on('acceptrequesterror', function () {
-
-          expect($secondScope.messages[$secondScope.messages.length - 1].message).to.eql('file does not exist');
-
-          done();
-
-        });
-
-        $secondScope.$on('hasRequest', function () {
-          $secondScope.text = '--accept something.json';
-          $secondScope.submit();
-        });
-
-        $scope.text = '--createroom temp';
-        $scope.submit();
-        $scope.text = '--setroom temp';
-        $scope.submit();
-        $scope.tempAddFile('something.json', 'some data');
-
-      });
-
-    });
-
     describe('remove request', function () {
 
       it('should remove request', function (done) {

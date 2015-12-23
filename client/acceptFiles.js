@@ -10,11 +10,14 @@ function acceptFilesFactory() {
 
     this.addFile = function (roomId, id, fileId, filename, stats, fn) {
 
+      var fileURL = 'file' + '/' + id + '/' + fileId;
+
       var acceptFile = {
         roomId: roomId,
         id: id,
         fileId: fileId,
         filename: filename,
+        fileURL: fileURL,
         stats: stats
       };
 

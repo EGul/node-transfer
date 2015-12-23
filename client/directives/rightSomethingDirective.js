@@ -11,7 +11,7 @@ function rightSomethingDirective() {
     '<div class="file">',
     '<div class="box"></div>',
     '<div class="right">',
-    '<span class="filename">{{ item.filename }}</span><br>',
+    '<a class="filename" href={{item.fileURL}} download>{{item.filename}}</a><br>',
     '<span>from</span>',
     '</div>',
     '</div>'

@@ -180,10 +180,6 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       handleSetRoom(argv);
     }
 
-    if (argv.hasOwnProperty('accept')) {
-      handleAccept(argv);
-    }
-
     if (argv.hasOwnProperty('listuser')) {
       handleListUser(argv);
     }
@@ -564,33 +560,17 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
   function handleAccept(argv) {
 
-    var filename = argv['accept'];
+    var elems = document.getElementsByClassName('filename');
+    var elem = null;
+    var accept = argv.accept;
 
-    acceptFiles.getFiles('roomId', currentRoom.id, function (err, files) {
-
-      if (err) {
-        addMessage(null, null, err);
-        $scope.$emit('acceptrequesterror');
-        return null
+    for (var i = 0; i < elems.length; i++) {
+      elem = elems[i];
+      if (accept == elem.innerHTML) {
+        elem.click();
+        break;
       }
-
-      files = files.filter(function (e) {
-        if (e.filename === filename) return e;
-      });
-
-      if (!files.length) {
-        addMessage(null, null, 'file does not exist');
-        $scope.$emit('acceptrequesterror');
-        return null;
-      }
-
-      var file = files[0];
-      var id = file.id;
-      var fileId = file.fileId;
-
-      socket.emit('acceptRequest', id, fileId);
-
-    });
+    }
 
   }
 
@@ -844,7 +824,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
         var data = files[0].data;
 
-        socket.emit('fileData', id, fileId, data);
+        socket.emit('fileData', files[0].filename, data);
 
         addMessage(null, null, 'did send file');
 
