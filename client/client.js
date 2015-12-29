@@ -478,10 +478,8 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
       var user = actualUsers[0];
 
-      /*
       var newWindow = window.open();
-      newWindow.document.write(JSON.stringify(user.json));
-      */
+      newWindow.document.write('<pre>' + JSON.stringify(user.json, null, 2) + '</pre>');
 
       addMessage(null, null, 'found user');
       $scope.$emit('listuser');
