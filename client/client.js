@@ -25,6 +25,77 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
   addMessage(null, null, 'json: ');
 
+  var url = window.location.href;
+  var splitUrl = url.split('/');
+
+  var last = splitUrl[splitUrl.length - 1];
+
+  if (last == 'quick' || last.split('?')[0] == 'quick') {
+    handleQuickLogin();
+  }
+
+  function handleQuickLogin() {
+
+    var didCreateRoom = false;
+
+    var args = last.split('?');
+    args = args.slice(1, args.length).join('').split('&');
+    args = args.map(function (e) {
+      var eSplit = e.split('=');
+      var temp = {};
+      temp[eSplit[0]] = eSplit[1];
+      return temp;
+    });
+
+    next(0);
+
+    function next(index) {
+
+      if (index == args.length) {
+        return;
+      }
+
+      var current = args[index];
+
+      if (current.setuser) {
+        $scope.$on('didSetUser', function () {
+          next(index + 1);
+        });
+        handleUser({setuser: current.setuser});
+      }
+
+      if (current.connect) {
+        $scope.$on('connect', function () {
+          next(index + 1);
+        });
+        handleConnect();
+      }
+
+      if (current.createroom) {
+        $scope.$on('didcreateroom', function () {
+          didCreateRoom = true;
+          next(index + 1);
+        });
+        handleCreateRoom({createroom: current.createroom});
+      }
+
+      if (current.setroom) {
+        if (didCreateRoom) {
+          handleSetRoom({setroom: current.setroom});
+          next(index + 1);
+        }
+        else {
+          $scope.$on('createroom', function () {
+            handleSetRoom({setroom: current.setroom});
+            next(index + 1);
+          });
+        }
+      }
+
+    }
+
+  }
+
   $scope.tempAddFile = function (filename, data) {
 
     function setJson() {
