@@ -710,6 +710,29 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
 
             });
 
+            if (currentRoom != null) {
+
+              $scope.users = [];
+
+              rooms.leaveRoom(currentRoom.id, id, function () {
+
+                rooms.getUsersByRoomId(currentRoom.id, function (err, roomUsers) {
+
+                  roomUsers.forEach(function (e) {
+
+                    users.getUsers('id', e.userId, function (err, tempUsers) {
+                      var user = tempUsers[0];
+                      $scope.users.push(user);
+                    });
+                    
+                  });
+
+                });
+
+              });
+
+            }
+
             rooms.removeRooms('fromId', id, function (err) {
 
               addMessage(null, name, 'has disconnected');
