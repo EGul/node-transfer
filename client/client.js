@@ -460,7 +460,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
         var room = rooms.rooms[rooms.rooms.length - 1];
         var roomId = room.id;
 
-        socket.emit('createRoom', roomId, name);
+        socket.emit('createRoom', roomId, null, name);
 
         $scope.$emit('didcreateroom');
 
@@ -656,7 +656,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       rooms.getRooms('didCreate', true, function (err, tempRooms) {
         if (err) return false;
         tempRooms.forEach(function (e) {
-          socket.emit('createRoom', e.id, e.name);
+          socket.emit('createRoom', e.id, json.id, e.name);
         });
       });
 
@@ -724,7 +724,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
                       var user = tempUsers[0];
                       $scope.users.push(user);
                     });
-                    
+
                   });
 
                 });
