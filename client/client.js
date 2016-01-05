@@ -665,7 +665,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       }
 
       sendFiles.sendFiles.forEach(function (e) {
-        socket.emit('hasRequest', e.roomId, e.toId, e.fileId, e.filename, e.stats);
+        socket.emit('hasRequest', e.roomId, json.id, e.fileId, e.filename, e.stats);
       });
 
       $scope.$emit('something');
