@@ -661,7 +661,7 @@ function clientCtrl($scope, roomsFactory, messagesFactory, usersFactory, sendFil
       });
 
       if (currentRoom !== null) {
-        socket.emit('joinRoom', currentRoom.id);
+        socket.emit('joinRoom', currentRoom.id, json.id);
       }
 
       sendFiles.sendFiles.forEach(function (e) {
