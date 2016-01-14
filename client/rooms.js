@@ -133,7 +133,7 @@ function roomsFactory(roomFactory) {
     this.leaveRoom = function (roomId, userId, fn) {
 
       this.users = this.users.filter(function (e) {
-        if (e.userId === userId && e.roomId !== roomId) return e;
+        if (!(e.userId === userId && e.roomId === roomId)) return e;
       });
 
       fn(null);
