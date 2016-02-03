@@ -7,6 +7,9 @@ describe('client', function () {
   var $secondScope = null;
   var secondController = null;
 
+  var $thirdScope = null;
+  var thirdController = null;
+
   beforeEach(function () {
 
     module('app');
@@ -21,6 +24,11 @@ describe('client', function () {
       $secondScope = $rootScope.$new();
       secondController = $controller('clientCtrl', {
         $scope: $secondScope
+      });
+
+      $thirdScope = $rootScope.$new();
+      thirdController = $controller('clientCtrl', {
+        $scope: $thirdScope
       });
 
     });
@@ -42,7 +50,7 @@ describe('client', function () {
 
   describe('waiting for connect', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
 
     it('should get error message not connected', function () {
 
@@ -57,9 +65,9 @@ describe('client', function () {
 
   describe('waiting for room', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it('should get error message no room set on send message', function () {
 
@@ -158,12 +166,12 @@ describe('client', function () {
 
     it('should connect', function (done) {
 
-      somethingSetTempJson($scope, $secondScope);
-      somethingConnect($scope, $secondScope, function () {
+      setTempJson([$scope, $secondScope]);
+      connect([$scope, $secondScope], function () {
 
         expect($scope.messages.length).to.eql(4);
 
-        somethingDisconnect($scope, $secondScope, function () {
+        disconnect([$scope, $secondScope], function () {
           done();
         });
 
@@ -173,7 +181,7 @@ describe('client', function () {
 
     it('should get error already connected', function (done) {
 
-      somethingSetTempJson($scope, $secondScope);
+      setTempJson([$scope, $secondScope]);
 
       $scope.$on('connectError', function () {
 	expect($scope.messages[$scope.messages.length - 1].message).to.eql('already connected');
@@ -194,9 +202,9 @@ describe('client', function () {
 
   describe('disconnect', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    beforeEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    beforeEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it('should disconnect', function () {
 
@@ -209,9 +217,9 @@ describe('client', function () {
 
   describe('disconnect reconnect', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it('should disconnect reconnect', function (done) {
 
@@ -233,10 +241,10 @@ describe('client', function () {
 
   describe('connected users', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    beforeEach(function (done) { setRoom($scope, $secondScope, done) });
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    beforeEach(function (done) { setRoom([$scope, $secondScope], done) });
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it('should have connected users', function () {
 
@@ -252,10 +260,10 @@ describe('client', function () {
 
   describe('list users', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    beforeEach(function (done) { setRoom($scope, $secondScope, done) });
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    beforeEach(function (done) { setRoom([$scope, $secondScope], done) });
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it ('should list user', function (done) {
 
@@ -288,9 +296,9 @@ describe('client', function () {
 
     describe('createRoom', function () {
 
-      beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-      beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-      afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+      beforeEach(function () { setTempJson([$scope, $secondScope]) });
+      beforeEach(function (done) { connect([$scope, $secondScope], done) });
+      afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
       it('should create room', function (done) {
 
@@ -330,9 +338,9 @@ describe('client', function () {
 
     describe('removeRoom', function () {
 
-      beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-      beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-      afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+      beforeEach(function () { setTempJson([$scope, $secondScope]) });
+      beforeEach(function (done) { connect([$scope, $secondScope], done) });
+      afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
       it('should get error room does not exist', function () {
 
@@ -501,9 +509,13 @@ describe('client', function () {
 
     describe('setRoom', function () {
 
-      beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-      beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-      afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+      // beforeEach(function () { setTempJson([$scope, $secondScope]) });
+      // beforeEach(function (done) { connect([$scope, $secondScope], done) });
+      // afterEach(function (done) { disconnect([$scope, $secondScope], done) });
+
+      beforeEach(function () { setTempJson([$scope, $secondScope]) });
+      beforeEach(function (done) { connect([$scope, $secondScope], done) });
+      afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
       it('should get error room does not exist', function (done) {
 
@@ -684,7 +696,7 @@ describe('client', function () {
 
     describe('connect', function () {
 
-      beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
+      beforeEach(function () { setTempJson([$scope, $secondScope]) });
       beforeEach(function (done) {
 
         $scope.$on('connect', function () { done() });
@@ -694,7 +706,7 @@ describe('client', function () {
 
       });
 
-      afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+      afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
       it('should send room on user connect', function (done) {
 
@@ -735,9 +747,9 @@ describe('client', function () {
 
     describe('disconnect', function () {
 
-      beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-      beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-      afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+      beforeEach(function () { setTempJson([$scope, $secondScope]) });
+      beforeEach(function (done) { connect([$scope, $secondScope], done) });
+      afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
       it('should remove all rooms', function (done) {
 
@@ -879,10 +891,10 @@ describe('client', function () {
 
   describe('message', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    beforeEach(function (done) { setRoom($scope, $secondScope, done)});
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    beforeEach(function (done) { setRoom([$scope, $secondScope], done)});
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     it('should send message', function (done) {
 
@@ -956,10 +968,10 @@ describe('client', function () {
 
   describe('filetransfer', function () {
 
-    beforeEach(function () { somethingSetTempJson($scope, $secondScope) });
-    beforeEach(function (done) { somethingConnect($scope, $secondScope, done) });
-    beforeEach(function (done) { setRoom($scope, $secondScope, done) });
-    afterEach(function (done) { somethingDisconnect($scope, $secondScope, done) });
+    beforeEach(function () { setTempJson([$scope, $secondScope]) });
+    beforeEach(function (done) { connect([$scope, $secondScope], done) });
+    beforeEach(function (done) { setRoom([$scope, $secondScope], done) });
+    afterEach(function (done) { disconnect([$scope, $secondScope], done) });
 
     describe('send request', function () {
 
@@ -1370,97 +1382,166 @@ describe('client', function () {
 
 });
 
-function somethingSetTempJson($scope, $secondScope) {
+function setTempJson(arr) {
 
-  $scope.tempAddFile('temp.json', '{"name": "first", "id": "1"}');
-  $secondScope.tempAddFile('temp.json', '{"name": "second", "id": "2"}');
+  var names = {
+    0: 'first',
+    1: 'second',
+    2: 'third',
+    3: 'fourth',
+    4: 'fifth'
+  }
+
+  for (var i = 0; i < arr.length; i++) {
+    var dictionaryString = '{' + '"name": ' + '"' + names[i] + '"' + ', "id": ' + '"' + (i + 1) + '"' + '}';
+    arr[i].tempAddFile('temp.json', dictionaryString);
+  }
 
 }
 
-function somethingConnect($scope, $secondScope, fn) {
+function connect(arr, fn) {
 
-    var removeOnConnect= null;
-    var removeOnUserJson = null;
+  if (arr.length == 0) {
+    console.log('must have at least one object in array');
+    return;
+  }
 
-    removeOnUserJson = $secondScope.$on('userjson', function () {
-      removeOnUserJson();
+  var currentIndex = 0;
+  var maxConnect = 1;
+  var currentConnect = 0;
+
+  for (var i = 0; i < arr.length; i++) {
+    var current = arr[i];
+    current.$on('connect', did);
+    current.$on('something', did);
+    current.$on('userjson', did);
+  }
+
+  function did() {
+
+    currentConnect++;
+
+    if (currentConnect === maxConnect) {
+
+      currentIndex++;
+      maxConnect = 1 + currentIndex + currentIndex;
+      currentConnect = 0;
+
+      if (currentIndex == arr.length) {
+        fn();
+        return;
+      }
+
+      next(currentIndex);
+
+    }
+
+  }
+
+  function next(index) {
+
+    if (!arr[index]) {
+      return;
+    }
+
+    var current = arr[index];
+
+    current.text = '--connect';
+    current.submit();
+
+  }
+
+  next(currentIndex);
+
+}
+
+function setRoom(arr, fn) {
+
+  if (arr.length < 2) {
+    console.log('must have at least two objects in array');
+    return;
+  }
+
+  var first = arr.shift();
+
+  var createRoomCount = 0;
+  var joinRoomCount = 0;
+
+  first.$on('joinroom', function () {
+    joinRoomCount++;
+    if (joinRoomCount == arr.length) {
       fn();
+    }
+  });
+
+  for (var i = 0; i < arr.length; i++) {
+
+    (function (current) {
+
+      var removeOnJoinRoom = null;
+
+      removeOnJoinRoom = current.$on('joinroom', function () {
+        removeOnJoinRoom();
+        current.text = '--setroom something';
+        current.submit();
+      });
+
+    })(arr[i]);
+
+  }
+
+  for (var i = 0; i < arr.length; i++) {
+
+    arr[i].$on('createroom', function () {
+
+      createRoomCount++
+
+      if (createRoomCount == arr.length) {
+        first.text = '--setroom something';
+        first.submit();
+      }
+
     });
 
-    removeOnConnect = $scope.$on('connect', function () {
-      removeOnConnect();
-      $secondScope.text = '--connect';
-      $secondScope.submit();
-    });
+  }
 
-    $scope.text = '--connect';
-    $scope.submit();
+  first.text = '--createroom something';
+  first.submit();
 
 }
 
-function setRoom($scope, $secondScope, fn) {
-
-  var removeOnCreateRoom = null;
-  var removeOnJoinRoom = null;
-  var secondRemoveOnJoinRoom = null;
-
-  removeOnJoinRoom = $scope.$on('joinroom', function () {
-    removeOnJoinRoom();
-    fn();
-  });
-
-  secondRemoveOnJoinRoom = $secondScope.$on('joinroom', function () {
-    secondRemoveOnJoinRoom();
-    $secondScope.text = '--setroom something';
-    $secondScope.submit();
-  });
-
-  removeOnCreateRoom = $secondScope.$on('createroom', function () {
-    removeOnCreateRoom();
-    $scope.text = '--setroom something';
-    $scope.submit();
-  });
-
-  $scope.text = '--createroom something';
-  $scope.submit();
-
-}
-
-function somethingDisconnect($scope, $secondScope, fn) {
+function disconnect(arr, fn) {
 
   var count = 0;
+
   function did() {
     count++;
-    if (count == 2) fn();
+    if (count == arr.length) {
+      fn();
+    }
   }
 
-  var removeOnDisconnect = null;
-  var secondRemoveOnDisconnect = null;
+  for (var i = 0; i < arr.length; i++) {
 
-  removeOnDisconnect = $scope.$on('disconnect', function () {
-    removeOnDisconnect();
-    did()
-  });
+    var e = arr[i];
 
-  secondRemoveOnDisconnect = $secondScope.$on('disconnect', function () {
-    secondRemoveOnDisconnect();
-    did()
-  });
+    if (e.socket.connected) {
 
-  if ($scope.socket.connected) {
-    $scope.text = '--disconnect';
-    $scope.submit();
-  }
-  else {
-    did();
-  }
+      var removeOnDisconnect = null;
 
-  if ($secondScope.socket.connected) {
-    $secondScope.text = '--disconnect';
-    $secondScope.submit();
-  }
-  else {
-    did();
+      removeOnDisconnect = e.$on('disconnect', function () {
+        removeOnDisconnect();
+        did();
+      });
+
+      e.text = '--disconnect';
+      e.submit();
+
+    }
+    else {
+      did();
+    }
+
   }
 
 }
